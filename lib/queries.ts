@@ -77,6 +77,27 @@ export async function getOfficerAdmin(id: string): Promise<Officer | null> {
   return (data ?? null) as Officer | null
 }
 
+// ── サイトポリシー(/policy) ──
+export async function getPolicySettings(): Promise<{
+  copyright: string
+  trademark: string
+  disclaimer: string
+  contact: string
+}> {
+  const s = await getSettings([
+    'policy_copyright',
+    'policy_trademark',
+    'policy_disclaimer',
+    'policy_contact',
+  ])
+  return {
+    copyright: s.policy_copyright ?? '',
+    trademark: s.policy_trademark ?? '',
+    disclaimer: s.policy_disclaimer ?? '',
+    contact: s.policy_contact ?? '',
+  }
+}
+
 // category 指定で公開 resources を取得（規程・個人情報保護 等）
 export async function getResourcesByCategory(
   category: string,

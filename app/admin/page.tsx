@@ -67,6 +67,17 @@ export default async function AdminHome() {
         </li>
         <li>
           <Link
+            href="/admin/policy"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            サイトポリシー（policy）の編集
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              著作権・商標・免責事項・お問い合わせ先の編集
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/admin/divisions"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >

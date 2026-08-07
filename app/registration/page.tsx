@@ -5,7 +5,10 @@ import type { Resource } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 export default async function RegistrationPage() {
-  const resources = await listResources()
+  const all = await listResources()
+  // 規程(/about)・個人情報保護(/policy) は専用ページで扱うため一覧から除外
+  const RESERVED = new Set(['規程', '個人情報保護'])
+  const resources = all.filter((r) => !RESERVED.has(r.category))
 
   // category ごとにグルーピング（sort_order 順に並んだ配列の初出順でグループ化）
   const groups: { category: string; items: Resource[] }[] = []

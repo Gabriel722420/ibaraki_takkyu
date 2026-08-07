@@ -28,7 +28,16 @@ export function SiteFooter() {
           ))}
         </ul>
 
-        <p className="mt-6 text-sm text-white/80">
+        <p className="mt-6">
+          <Link
+            href="/policy"
+            className="text-sm underline-offset-4 hover:underline"
+          >
+            このサイトについて・プライバシーポリシー
+          </Link>
+        </p>
+
+        <p className="mt-4 text-sm text-white/80">
           © {year} 一般社団法人茨城県卓球連盟
         </p>
       </div>
