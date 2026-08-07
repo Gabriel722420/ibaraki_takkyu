@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import {
   createAnnouncement,
   updateAnnouncement,
@@ -15,8 +16,20 @@ import {
   toLocalInput,
   fromLocalInput,
 } from '@/components/admin/FormKit'
-import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Announcement } from '@/lib/types'
+
+// SSR事故回避のため動的import(ssr:false)でエディタを読み込む
+const RichTextEditor = dynamic(
+  () => import('@/components/admin/RichTextEditor').then((m) => m.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded border p-3 text-sm text-gray-500">
+        エディタを読み込み中…
+      </div>
+    ),
+  },
+)
 
 export function NewsForm({
   announcement,
@@ -38,9 +51,6 @@ export function NewsForm({
     announcement?.is_published ?? false,
   )
   const [isPinned, setIsPinned] = useState(announcement?.is_pinned ?? false)
-  const [imagePath, setImagePath] = useState<string | null>(
-    announcement?.image_path ?? null,
-  )
   const [publishAt, setPublishAt] = useState(
     toLocalInput(announcement?.publish_at),
   )
@@ -54,7 +64,6 @@ export function NewsForm({
       published_at: publishedAt,
       is_published: isPublished,
       is_pinned: isPinned,
-      image_path: imagePath,
       publish_at: fromLocalInput(publishAt),
     }
     run(async () => {
@@ -78,21 +87,8 @@ export function NewsForm({
         />
       </Field>
 
-      <Field label="本文" hint="改行できます">
-        <textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={8}
-          className={inputClass}
-        />
-      </Field>
-
-      <Field label="写真" hint="任意・自動圧縮されます">
-        <ImageUploader
-          prefix="news"
-          value={imagePath}
-          onChange={setImagePath}
-        />
+      <Field label="本文" hint="太字・色・見出し・箇条書き・リンク・画像が使えます">
+        <RichTextEditor value={body} onChange={setBody} imagePrefix="news" />
       </Field>
 
       <Field label="掲載日（必須）">

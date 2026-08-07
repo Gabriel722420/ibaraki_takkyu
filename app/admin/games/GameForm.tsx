@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { createGame, updateGame, type GameInput } from './actions'
 import {
   Field,
@@ -12,8 +13,20 @@ import {
   toLocalInput,
   fromLocalInput,
 } from '@/components/admin/FormKit'
-import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Division, Game } from '@/lib/types'
+
+// SSR事故回避のため動的import(ssr:false)でエディタを読み込む
+const RichTextEditor = dynamic(
+  () => import('@/components/admin/RichTextEditor').then((m) => m.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded border p-3 text-sm text-gray-500">
+        エディタを読み込み中…
+      </div>
+    ),
+  },
+)
 
 export function GameForm({
   divisions,
@@ -37,9 +50,6 @@ export function GameForm({
   const [venue, setVenue] = useState(game?.venue ?? '')
   const [summary, setSummary] = useState(game?.summary ?? '')
   const [isPublished, setIsPublished] = useState(game?.is_published ?? false)
-  const [imagePath, setImagePath] = useState<string | null>(
-    game?.image_path ?? null,
-  )
   const [publishAt, setPublishAt] = useState(toLocalInput(game?.publish_at))
 
   const canSave = title.trim().length > 0 && Number(fiscalYear) > 0
@@ -53,7 +63,6 @@ export function GameForm({
       venue,
       summary,
       is_published: isPublished,
-      image_path: imagePath,
       publish_at: fromLocalInput(publishAt),
     }
     run(async () => {
@@ -118,20 +127,11 @@ export function GameForm({
         />
       </Field>
 
-      <Field label="概要" hint="任意・改行できます">
-        <textarea
+      <Field label="概要・本文" hint="任意・太字・色・見出し・箇条書き・リンク・画像が使えます">
+        <RichTextEditor
           value={summary}
-          onChange={(e) => setSummary(e.target.value)}
-          rows={4}
-          className={inputClass}
-        />
-      </Field>
-
-      <Field label="写真" hint="任意・自動圧縮されます">
-        <ImageUploader
-          prefix="games"
-          value={imagePath}
-          onChange={setImagePath}
+          onChange={setSummary}
+          imagePrefix="games"
         />
       </Field>
 

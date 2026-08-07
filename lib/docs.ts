@@ -10,6 +10,22 @@ type LinkedDoc = {
   external_url: string | null
 }
 
+// 本文の表示/編集用HTML化（純粋関数・クライアント可）。
+// リッチエディタHTMLはそのまま、旧プレーンテキストは改行を <br>/<p> に救済して崩れを防ぐ。
+export function toContentHtml(value: string | null | undefined): string {
+  const s = (value ?? '').trim()
+  if (!s) return ''
+  if (/<\/?[a-z][\s\S]*>/i.test(s)) return s // 既にHTMLとみなす
+  const esc = s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+  return esc
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('')
+}
+
 // 大会の状態（年間一覧の自動判定・純粋関数）
 export type GameStatus = 'scheduled' | 'awaiting' | 'published'
 

@@ -9,7 +9,6 @@ export type AnnouncementInput = {
   published_at: string // YYYY-MM-DD（timestamptz へキャスト）
   is_published: boolean
   is_pinned: boolean
-  image_path: string | null
   publish_at: string | null // ISO or null（null=即時公開）
 }
 
@@ -27,7 +26,6 @@ function normalize(input: AnnouncementInput): AnnouncementInput {
     published_at: input.published_at,
     is_published: input.is_published,
     is_pinned: input.is_pinned,
-    image_path: input.image_path || null,
     publish_at: input.publish_at || null,
   }
 }

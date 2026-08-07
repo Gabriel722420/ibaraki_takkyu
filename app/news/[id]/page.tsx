@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getAnnouncement } from '@/lib/queries'
-import { resolveImageUrl } from '@/lib/docs'
+import { toContentHtml } from '@/lib/docs'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,18 +26,11 @@ export default async function NewsDetail({
         <span>{formatDate(a.published_at)}</span>
       </div>
       <h1 className="mb-4 text-2xl leading-snug font-bold">{a.title}</h1>
-      {resolveImageUrl(a.image_path) && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={resolveImageUrl(a.image_path)!}
-          alt=""
-          className="mb-4 w-full max-w-full rounded-lg border"
-        />
-      )}
       {a.body && (
-        <div className="leading-relaxed whitespace-pre-wrap text-gray-800">
-          {a.body}
-        </div>
+        <div
+          className="richtext text-gray-800"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(toContentHtml(a.body)) }}
+        />
       )}
       <div className="mt-8">
         <Link
