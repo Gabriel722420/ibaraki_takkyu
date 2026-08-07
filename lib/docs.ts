@@ -10,6 +10,25 @@ type LinkedDoc = {
   external_url: string | null
 }
 
+// 大会の状態（年間一覧の自動判定・純粋関数）
+export type GameStatus = 'scheduled' | 'awaiting' | 'published'
+
+export function gameStatus(opts: {
+  eventDate: string | null
+  hasResult: boolean
+  today: string // 'YYYY-MM-DD'
+}): GameStatus {
+  if (opts.hasResult) return 'published' // 結果添付済み
+  if (opts.eventDate && opts.eventDate < opts.today) return 'awaiting' // 過去かつ結果未添付
+  return 'scheduled' // 予定（未来 or 未定 or 結果未添付）
+}
+
+export const GAME_STATUS_LABEL: Record<GameStatus, string> = {
+  scheduled: '予定',
+  awaiting: '結果待ち',
+  published: '結果掲載済み',
+}
+
 // images バケットの公開URL解決（クライアント可・純粋関数）
 export function resolveImageUrl(path: string | null): string | null {
   if (!path) return null

@@ -299,6 +299,41 @@ export async function listGames(
   return (data ?? []) as unknown as Game[]
 }
 
+// 年間大会一覧用：公開＋掲載期間＋予約ゲートを満たす全大会に、
+// 結果(doc_type='結果')添付有無フラグを付与して返す。
+export async function listGamesForYearList(): Promise<
+  (Game & { hasResult: boolean })[]
+> {
+  const supabase = await createClient()
+  const years = await getRetentionYears()
+  const cutoff = new Date()
+  cutoff.setFullYear(cutoff.getFullYear() - years)
+  const cutoffStr = cutoff.toISOString().slice(0, 10)
+
+  const { data, error } = await supabase
+    .from('games')
+    .select('*, division:divisions(*)')
+    .eq('is_published', true)
+    .or(scheduledOr())
+    .or(`event_date.is.null,event_date.gte.${cutoffStr}`)
+    .order('fiscal_year', { ascending: false })
+    .order('event_date', { ascending: true, nullsFirst: false })
+  if (error) throw error
+  const games = (data ?? []) as unknown as Game[]
+  if (games.length === 0) return []
+
+  const ids = games.map((g) => g.id)
+  const { data: rdocs } = await supabase
+    .from('game_documents')
+    .select('game_id')
+    .eq('doc_type', '結果')
+    .eq('is_published', true)
+    .in('game_id', ids)
+  const resultSet = new Set((rdocs ?? []).map((r) => r.game_id as string))
+
+  return games.map((g) => ({ ...g, hasResult: resultSet.has(g.id) }))
+}
+
 export async function getGame(id: string): Promise<{
   game: Game | null
   documents: GameDocument[]
