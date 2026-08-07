@@ -7,6 +7,15 @@ export type Division = {
 
 export type DocType = '要項' | '組合せ' | '結果' | '連絡'
 
+export type Category = {
+  id: string
+  name: string
+  slug: string
+  parent_id: string | null
+  sort_order: number
+  wp_term_id: number | null
+}
+
 export type Announcement = {
   id: string
   title: string
@@ -16,6 +25,8 @@ export type Announcement = {
   is_pinned: boolean
   image_path: string | null
   publish_at: string | null
+  category_id: string | null
+  category?: Category | null
 }
 
 export type Resource = {
