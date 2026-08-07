@@ -264,6 +264,8 @@ export async function listGamesAdmin(): Promise<Game[]> {
   return (data ?? []) as unknown as Game[]
 }
 
+// 掲載期間（年）。現運用は全期間公開のため games 公開クエリからは未参照だが、
+// settings.record_retention_years は残置し、理事会決定で retention を再導入する際に再利用する。
 export async function getRetentionYears(): Promise<number> {
   const supabase = await createClient()
   const { data } = await supabase
@@ -278,17 +280,13 @@ export async function listGames(
   opts: { fiscalYear?: number; divisionId?: string } = {},
 ): Promise<Game[]> {
   const supabase = await createClient()
-  const years = await getRetentionYears()
-  const cutoff = new Date()
-  cutoff.setFullYear(cutoff.getFullYear() - years)
-  const cutoffStr = cutoff.toISOString().slice(0, 10)
-
+  // ※ 現運用は全期間公開（掲載期間フィルタは撤廃）。
+  //   retention 再導入時は getRetentionYears() による event_date 下限をここで再適用する。
   let q = supabase
     .from('games')
     .select('*, division:divisions(*)')
     .eq('is_published', true)
     .or(scheduledOr())
-    .or(`event_date.is.null,event_date.gte.${cutoffStr}`)
     .order('event_date', { ascending: false, nullsFirst: true })
 
   if (opts.fiscalYear) q = q.eq('fiscal_year', opts.fiscalYear)
@@ -299,23 +297,20 @@ export async function listGames(
   return (data ?? []) as unknown as Game[]
 }
 
-// 年間大会一覧用：公開＋掲載期間＋予約ゲートを満たす全大会に、
+// 年間大会一覧用：公開＋予約ゲートを満たす全大会に、
 // 結果(doc_type='結果')添付有無フラグを付与して返す。
+// ※ 現運用は全期間公開（掲載期間フィルタは撤廃）。理事会決定で retention を
+//   再導入する場合は、ここで getRetentionYears() による event_date 下限を再適用する。
 export async function listGamesForYearList(): Promise<
   (Game & { hasResult: boolean })[]
 > {
   const supabase = await createClient()
-  const years = await getRetentionYears()
-  const cutoff = new Date()
-  cutoff.setFullYear(cutoff.getFullYear() - years)
-  const cutoffStr = cutoff.toISOString().slice(0, 10)
 
   const { data, error } = await supabase
     .from('games')
     .select('*, division:divisions(*)')
     .eq('is_published', true)
     .or(scheduledOr())
-    .or(`event_date.is.null,event_date.gte.${cutoffStr}`)
     .order('fiscal_year', { ascending: false })
     .order('event_date', { ascending: true, nullsFirst: false })
   if (error) throw error
