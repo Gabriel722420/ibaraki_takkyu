@@ -1,12 +1,18 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import {
   createAnnouncement,
   updateAnnouncement,
   type AnnouncementInput,
 } from './actions'
+import {
+  Field,
+  CheckboxField,
+  SaveBar,
+  inputClass,
+  useSaveState,
+} from '@/components/admin/FormKit'
 import type { Announcement } from '@/lib/types'
 
 export function NewsForm({
@@ -18,6 +24,7 @@ export function NewsForm({
 }) {
   const router = useRouter()
   const editing = !!announcement
+  const { saving, error, run } = useSaveState()
 
   const [title, setTitle] = useState(announcement?.title ?? '')
   const [body, setBody] = useState(announcement?.body ?? '')
@@ -28,14 +35,10 @@ export function NewsForm({
     announcement?.is_published ?? false,
   )
   const [isPinned, setIsPinned] = useState(announcement?.is_pinned ?? false)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const canSave = title.trim().length > 0 && publishedAt.length > 0
 
-  async function save() {
-    setSaving(true)
-    setError(null)
+  function save() {
     const values: AnnouncementInput = {
       title,
       body,
@@ -43,7 +46,7 @@ export function NewsForm({
       is_published: isPublished,
       is_pinned: isPinned,
     }
-    try {
+    run(async () => {
       if (editing) {
         await updateAnnouncement({ id: announcement!.id, values })
       } else {
@@ -51,83 +54,53 @@ export function NewsForm({
       }
       router.push('/admin/news')
       router.refresh()
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '保存に失敗しました。')
-      setSaving(false)
-    }
+    }, true)
   }
 
   return (
     <div className="space-y-5">
-      <div>
-        <label className="mb-1 block text-sm text-gray-600">
-          タイトル（必須）
-        </label>
+      <Field label="タイトル（必須）">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+          className={inputClass}
         />
-      </div>
+      </Field>
 
-      <div>
-        <label className="mb-1 block text-sm text-gray-600">
-          本文（任意・改行可）
-        </label>
+      <Field label="本文" hint="改行できます">
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={8}
-          className="w-full rounded border px-3 py-2"
+          className={inputClass}
         />
-      </div>
+      </Field>
 
-      <div>
-        <label className="mb-1 block text-sm text-gray-600">
-          掲載日（必須）
-        </label>
+      <Field label="掲載日（必須）">
         <input
           type="date"
           value={publishedAt}
           onChange={(e) => setPublishedAt(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+          className={inputClass}
         />
-      </div>
+      </Field>
 
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={isPinned}
-          onChange={(e) => setIsPinned(e.target.checked)}
-          className="h-5 w-5"
-        />
-        <span>重要（上部に固定表示）</span>
-      </label>
+      <CheckboxField checked={isPinned} onChange={setIsPinned}>
+        重要（上部に固定表示）
+      </CheckboxField>
 
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={isPublished}
-          onChange={(e) => setIsPublished(e.target.checked)}
-          className="h-5 w-5"
-        />
-        <span>公開する（チェックを外すと下書き）</span>
-      </label>
+      <CheckboxField checked={isPublished} onChange={setIsPublished}>
+        公開する（チェックを外すと下書き）
+      </CheckboxField>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
-
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={save}
-          disabled={saving || !canSave}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-        >
-          {saving ? '保存中…' : editing ? '更新する' : '作成する'}
-        </button>
-        <Link href="/admin/news" className="rounded border px-4 py-2">
-          一覧へ戻る
-        </Link>
-      </div>
+      <SaveBar
+        onSave={save}
+        canSave={canSave}
+        saving={saving}
+        error={error}
+        editing={editing}
+        cancelHref="/admin/news"
+      />
     </div>
   )
 }
