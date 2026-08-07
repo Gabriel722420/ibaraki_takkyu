@@ -9,6 +9,12 @@ import type {
   Resource,
 } from './types'
 
+// 予約投稿の公開ゲート：publish_at 未設定 or 到来済みのみ公開。
+// 使い方: query.or(scheduledOr())（is_published=true とAND結合される）
+function scheduledOr(): string {
+  return `publish_at.is.null,publish_at.lte.${new Date().toISOString()}`
+}
+
 // ── 設定値（settings, key→string）をまとめて取得 ──
 export async function getSettings(
   keys: string[],
@@ -121,6 +127,7 @@ export async function listAnnouncements(): Promise<Announcement[]> {
     .from('announcements')
     .select('*')
     .eq('is_published', true)
+    .or(scheduledOr())
     .order('is_pinned', { ascending: false })
     .order('published_at', { ascending: false })
   if (error) throw error
@@ -135,6 +142,7 @@ export async function getAnnouncement(id: string): Promise<Announcement | null> 
     .select('*')
     .eq('id', id)
     .eq('is_published', true)
+    .or(scheduledOr())
     .single()
   return (data ?? null) as Announcement | null
 }
@@ -208,6 +216,7 @@ export async function listLatestAnnouncements(
     .from('announcements')
     .select('*')
     .eq('is_published', true)
+    .or(scheduledOr())
     .order('is_pinned', { ascending: false })
     .order('published_at', { ascending: false })
     .limit(limit)
@@ -223,6 +232,7 @@ export async function listUpcomingGames(limit = 5): Promise<Game[]> {
     .from('games')
     .select('*, division:divisions(*)')
     .eq('is_published', true)
+    .or(scheduledOr())
     .gte('event_date', today)
     .order('event_date', { ascending: true })
     .limit(limit)
@@ -277,6 +287,7 @@ export async function listGames(
     .from('games')
     .select('*, division:divisions(*)')
     .eq('is_published', true)
+    .or(scheduledOr())
     .or(`event_date.is.null,event_date.gte.${cutoffStr}`)
     .order('event_date', { ascending: false, nullsFirst: true })
 
@@ -299,6 +310,7 @@ export async function getGame(id: string): Promise<{
       .select('*, division:divisions(*)')
       .eq('id', id)
       .eq('is_published', true)
+      .or(scheduledOr())
       .single(),
     supabase
       .from('game_documents')

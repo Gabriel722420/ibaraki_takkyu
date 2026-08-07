@@ -34,6 +34,11 @@ export default async function AdminNewsPage() {
               >
                 {a.is_published ? '公開中' : '下書き'}
               </span>
+              {isScheduled(a.is_published, a.publish_at) && (
+                <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-800">
+                  予約中
+                </span>
+              )}
               {a.is_pinned && (
                 <span className="rounded bg-primary px-2 py-0.5 text-primary-foreground">
                   重要
@@ -68,4 +73,9 @@ export default async function AdminNewsPage() {
 function formatDate(d: string): string {
   const [y, m, day] = d.slice(0, 10).split('-')
   return `${y}年${Number(m)}月${Number(day)}日`
+}
+
+// 公開ONだが publish_at が未来＝予約中
+function isScheduled(isPublished: boolean, publishAt: string | null): boolean {
+  return isPublished && !!publishAt && new Date(publishAt).getTime() > Date.now()
 }

@@ -6,6 +6,21 @@ import Link from 'next/link'
 
 export const inputClass = 'w-full rounded border px-3 py-2'
 
+// timestamptz(ISO) ↔ datetime-local(ローカル) 変換（予約投稿の日時入力用）
+export function toLocalInput(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours(),
+  )}:${pad(d.getMinutes())}`
+}
+
+export function fromLocalInput(local: string): string | null {
+  if (!local) return null
+  return new Date(local).toISOString()
+}
+
 export function Field({
   label,
   hint,

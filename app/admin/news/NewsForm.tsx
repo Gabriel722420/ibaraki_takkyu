@@ -12,6 +12,8 @@ import {
   SaveBar,
   inputClass,
   useSaveState,
+  toLocalInput,
+  fromLocalInput,
 } from '@/components/admin/FormKit'
 import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Announcement } from '@/lib/types'
@@ -39,6 +41,9 @@ export function NewsForm({
   const [imagePath, setImagePath] = useState<string | null>(
     announcement?.image_path ?? null,
   )
+  const [publishAt, setPublishAt] = useState(
+    toLocalInput(announcement?.publish_at),
+  )
 
   const canSave = title.trim().length > 0 && publishedAt.length > 0
 
@@ -50,6 +55,7 @@ export function NewsForm({
       is_published: isPublished,
       is_pinned: isPinned,
       image_path: imagePath,
+      publish_at: fromLocalInput(publishAt),
     }
     run(async () => {
       if (editing) {
@@ -94,6 +100,15 @@ export function NewsForm({
           type="date"
           value={publishedAt}
           onChange={(e) => setPublishedAt(e.target.value)}
+          className={inputClass}
+        />
+      </Field>
+
+      <Field label="予約日時" hint="未指定なら即時公開／指定すると到来後に自動公開">
+        <input
+          type="datetime-local"
+          value={publishAt}
+          onChange={(e) => setPublishAt(e.target.value)}
           className={inputClass}
         />
       </Field>

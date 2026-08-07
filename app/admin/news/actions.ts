@@ -10,6 +10,7 @@ export type AnnouncementInput = {
   is_published: boolean
   is_pinned: boolean
   image_path: string | null
+  publish_at: string | null // ISO or null（null=即時公開）
 }
 
 function revalidateAll(id?: string) {
@@ -27,6 +28,7 @@ function normalize(input: AnnouncementInput): AnnouncementInput {
     is_published: input.is_published,
     is_pinned: input.is_pinned,
     image_path: input.image_path || null,
+    publish_at: input.publish_at || null,
   }
 }
 

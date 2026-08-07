@@ -34,6 +34,11 @@ export default async function AdminGamesPage() {
               >
                 {t.is_published ? '公開中' : '下書き'}
               </span>
+              {isScheduled(t.is_published, t.publish_at) && (
+                <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-800">
+                  予約中
+                </span>
+              )}
               {t.division?.name && (
                 <span className="rounded bg-gray-100 px-2 py-0.5">
                   {t.division.name}
@@ -75,4 +80,9 @@ export default async function AdminGamesPage() {
 function formatDate(d: string): string {
   const [y, m, day] = d.split('-')
   return `${y}年${Number(m)}月${Number(day)}日`
+}
+
+// 公開ONだが publish_at が未来＝予約中
+function isScheduled(isPublished: boolean, publishAt: string | null): boolean {
+  return isPublished && !!publishAt && new Date(publishAt).getTime() > Date.now()
 }

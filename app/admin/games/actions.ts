@@ -12,6 +12,7 @@ export type GameInput = {
   summary: string | null
   is_published: boolean
   image_path: string | null
+  publish_at: string | null // ISO or null（null=即時公開）
 }
 
 function revalidateAll(id?: string) {
@@ -31,6 +32,7 @@ function normalize(input: GameInput): GameInput {
     summary: input.summary?.trim() || null,
     is_published: input.is_published,
     image_path: input.image_path || null,
+    publish_at: input.publish_at || null,
   }
 }
 

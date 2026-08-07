@@ -9,6 +9,8 @@ import {
   SaveBar,
   inputClass,
   useSaveState,
+  toLocalInput,
+  fromLocalInput,
 } from '@/components/admin/FormKit'
 import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Division, Game } from '@/lib/types'
@@ -38,6 +40,7 @@ export function GameForm({
   const [imagePath, setImagePath] = useState<string | null>(
     game?.image_path ?? null,
   )
+  const [publishAt, setPublishAt] = useState(toLocalInput(game?.publish_at))
 
   const canSave = title.trim().length > 0 && Number(fiscalYear) > 0
 
@@ -51,6 +54,7 @@ export function GameForm({
       summary,
       is_published: isPublished,
       image_path: imagePath,
+      publish_at: fromLocalInput(publishAt),
     }
     run(async () => {
       if (editing) {
@@ -128,6 +132,15 @@ export function GameForm({
           prefix="games"
           value={imagePath}
           onChange={setImagePath}
+        />
+      </Field>
+
+      <Field label="予約日時" hint="未指定なら即時公開／指定すると到来後に自動公開">
+        <input
+          type="datetime-local"
+          value={publishAt}
+          onChange={(e) => setPublishAt(e.target.value)}
+          className={inputClass}
         />
       </Field>
 
