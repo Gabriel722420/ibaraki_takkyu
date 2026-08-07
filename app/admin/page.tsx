@@ -45,6 +45,28 @@ export default async function AdminHome() {
         </li>
         <li>
           <Link
+            href="/admin/about"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            連盟情報（about）の編集
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              会長挨拶の本文・署名・写真パスを編集
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/admin/officers"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            役員の管理
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              役員の追加・編集・並べ替え・公開・削除
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/admin/divisions"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >

@@ -5,8 +5,92 @@ import type {
   Division,
   Game,
   GameDocument,
+  Officer,
   Resource,
 } from './types'
+
+// ── 設定値（settings, key→string）をまとめて取得 ──
+export async function getSettings(
+  keys: string[],
+): Promise<Record<string, string>> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('settings')
+    .select('key, value')
+    .in('key', keys)
+  const out: Record<string, string> = {}
+  for (const row of data ?? []) {
+    const v = (row as { key: string; value: unknown }).value
+    out[(row as { key: string }).key] = typeof v === 'string' ? v : String(v ?? '')
+  }
+  return out
+}
+
+// ── 連盟情報(/about) ──
+export async function getAboutSettings(): Promise<{
+  greeting: string
+  sign: string
+  image: string
+}> {
+  const s = await getSettings([
+    'about_greeting',
+    'about_greeting_sign',
+    'about_greeting_image',
+  ])
+  return {
+    greeting: s.about_greeting ?? '',
+    sign: s.about_greeting_sign ?? '',
+    image: s.about_greeting_image ?? '',
+  }
+}
+
+// 役員（公開側・sort_order 昇順）
+export async function listOfficers(): Promise<Officer[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('officers')
+    .select('*')
+    .eq('is_published', true)
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Officer[]
+}
+
+// 役員（管理側・全件）
+export async function listOfficersAdmin(): Promise<Officer[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('officers')
+    .select('*')
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Officer[]
+}
+
+export async function getOfficerAdmin(id: string): Promise<Officer | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('officers')
+    .select('*')
+    .eq('id', id)
+    .single()
+  return (data ?? null) as Officer | null
+}
+
+// category 指定で公開 resources を取得（規程・個人情報保護 等）
+export async function getResourcesByCategory(
+  category: string,
+): Promise<Resource[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('is_published', true)
+    .eq('category', category)
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Resource[]
+}
 
 // ── お知らせ（公開側） ──
 // 一覧：公開のみ・固定を上部・公開日降順

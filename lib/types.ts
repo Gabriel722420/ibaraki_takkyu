@@ -26,6 +26,15 @@ export type Resource = {
   is_published: boolean
 }
 
+export type Officer = {
+  id: string
+  role: string
+  name: string
+  note: string | null
+  sort_order: number
+  is_published: boolean
+}
+
 export type Game = {
   id: string
   division_id: string | null
