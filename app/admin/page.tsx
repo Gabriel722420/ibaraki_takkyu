@@ -23,6 +23,28 @@ export default async function AdminHome() {
         </li>
         <li>
           <Link
+            href="/admin/news"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            おしらせの管理
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              お知らせの作成・編集・公開・削除（重要は上部固定）
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/admin/resources"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            登録・資格情報の管理
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              資料(PDF/外部リンク)の追加・編集・並べ替え・公開・削除
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/admin/divisions"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >

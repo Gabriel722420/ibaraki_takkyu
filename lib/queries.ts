@@ -1,6 +1,98 @@
 import { createClient } from './supabase/server'
 import { DOC_ORDER } from './docs'
-import type { Announcement, Division, Game, GameDocument } from './types'
+import type {
+  Announcement,
+  Division,
+  Game,
+  GameDocument,
+  Resource,
+} from './types'
+
+// ── お知らせ（公開側） ──
+// 一覧：公開のみ・固定を上部・公開日降順
+export async function listAnnouncements(): Promise<Announcement[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .eq('is_published', true)
+    .order('is_pinned', { ascending: false })
+    .order('published_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as Announcement[]
+}
+
+// 詳細：公開のみ
+export async function getAnnouncement(id: string): Promise<Announcement | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('announcements')
+    .select('*')
+    .eq('id', id)
+    .eq('is_published', true)
+    .single()
+  return (data ?? null) as Announcement | null
+}
+
+// ── お知らせ（管理側・is_published で絞らない） ──
+export async function listAnnouncementsAdmin(): Promise<Announcement[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .order('is_pinned', { ascending: false })
+    .order('published_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as Announcement[]
+}
+
+export async function getAnnouncementAdmin(
+  id: string,
+): Promise<Announcement | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('announcements')
+    .select('*')
+    .eq('id', id)
+    .single()
+  return (data ?? null) as Announcement | null
+}
+
+// ── 登録・資格情報（公開側） ──
+// 公開のみ・sort_order 昇順（ページ側で category グルーピング）
+export async function listResources(): Promise<Resource[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('is_published', true)
+    .order('sort_order', { ascending: true })
+    .order('title', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Resource[]
+}
+
+// ── 登録・資格情報（管理側） ──
+export async function listResourcesAdmin(): Promise<Resource[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .order('category', { ascending: true })
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Resource[]
+}
+
+export async function getResourceAdmin(id: string): Promise<Resource | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('id', id)
+    .single()
+  return (data ?? null) as Resource | null
+}
 
 // TOP用：最新のお知らせ（公開のみ・固定を優先し公開日降順）
 export async function listLatestAnnouncements(

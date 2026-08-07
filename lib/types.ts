@@ -16,6 +16,16 @@ export type Announcement = {
   is_pinned: boolean
 }
 
+export type Resource = {
+  id: string
+  category: string
+  title: string
+  file_path: string | null
+  external_url: string | null
+  sort_order: number
+  is_published: boolean
+}
+
 export type Game = {
   id: string
   division_id: string | null
