@@ -1,6 +1,30 @@
 import { createClient } from './supabase/server'
 import { DOC_ORDER } from './docs'
-import type { Tournament, TournamentDocument } from './types'
+import type { Division, Tournament, TournamentDocument } from './types'
+
+// 部門一覧（公開/管理共通・sort_order 順）。divisions は公開読取可。
+export async function listDivisions(): Promise<Division[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('divisions')
+    .select('*')
+    .order('sort_order')
+    .order('name')
+  if (error) throw error
+  return (data ?? []) as Division[]
+}
+
+// 管理用の大会一覧（is_published で絞らない＝下書きも表示）。
+export async function listTournamentsAdmin(): Promise<Tournament[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('tournaments')
+    .select('*, division:divisions(*)')
+    .order('fiscal_year', { ascending: false })
+    .order('event_date', { ascending: false, nullsFirst: true })
+  if (error) throw error
+  return (data ?? []) as unknown as Tournament[]
+}
 
 export async function getRetentionYears(): Promise<number> {
   const supabase = await createClient()
