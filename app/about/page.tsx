@@ -4,8 +4,44 @@ import {
   getResourcesByCategory,
 } from '@/lib/queries'
 import { resolveDocUrl } from '@/lib/docs'
+import type { Officer } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
+
+// role を大分類へマッピング（定義順に表示）
+const OFFICER_GROUPS: { label: string; roles: string[] }[] = [
+  { label: '名誉職', roles: ['名誉会長', '名誉副会長'] },
+  { label: '顧問', roles: ['最高顧問', '顧問'] },
+  { label: '会長・副会長', roles: ['会長', '副会長'] },
+  { label: '理事長・事務局・副理事長', roles: ['理事長', '事務局長', '副理事長'] },
+  { label: '常任理事', roles: ['常任理事'] },
+  { label: '理事', roles: ['理事'] },
+  { label: '監事', roles: ['監事'] },
+]
+
+function groupLabelFor(role: string): string {
+  return OFFICER_GROUPS.find((g) => g.roles.includes(role))?.label ?? 'その他'
+}
+
+// sort_order を保ったまま大分類でバケット化
+function groupOfficers(
+  officers: Officer[],
+): { label: string; items: Officer[]; mixed: boolean }[] {
+  const buckets = new Map<string, Officer[]>()
+  for (const o of officers) {
+    const label = groupLabelFor(o.role)
+    if (!buckets.has(label)) buckets.set(label, [])
+    buckets.get(label)!.push(o)
+  }
+  const order = [...OFFICER_GROUPS.map((g) => g.label), 'その他']
+  return order
+    .filter((label) => buckets.has(label))
+    .map((label) => {
+      const items = buckets.get(label)!
+      const mixed = new Set(items.map((i) => i.role)).size > 1
+      return { label, items, mixed }
+    })
+}
 
 export default async function AboutPage() {
   const [about, officers, docs] = await Promise.all([
@@ -44,21 +80,40 @@ export default async function AboutPage() {
         <div className="clear-both" />
       </section>
 
-      {/* 役員情報 */}
+      {/* 役員情報（大分類でグルーピング／1人1行・密度重視） */}
       <section className="mb-10">
         <h2 className="mb-3 text-xl font-bold">組織・役員</h2>
-        <ul className="divide-y divide-gray-200">
-          {officers.map((o) => (
-            <li key={o.id} className="flex flex-col gap-0.5 py-2">
-              <span className="text-sm text-gray-600">{o.role}</span>
-              <span className="text-lg leading-snug font-medium">{o.name}</span>
-              {o.note && <span className="text-sm text-gray-500">{o.note}</span>}
-            </li>
-          ))}
-          {officers.length === 0 && (
-            <li className="py-4 text-gray-500">準備中です。</li>
-          )}
-        </ul>
+        {officers.length === 0 ? (
+          <p className="py-4 text-gray-500">準備中です。</p>
+        ) : (
+          groupOfficers(officers).map((g) => (
+            <div key={g.label} className="mb-5">
+              <h3 className="mb-2 border-l-2 border-primary pl-2 font-bold text-primary">
+                {g.label}
+              </h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                {g.items.map((o) => (
+                  <li
+                    key={o.id}
+                    className={`leading-snug ${o.note ? 'col-span-2' : ''}`}
+                  >
+                    {g.mixed && (
+                      <span className="mr-1 text-sm text-gray-500">
+                        {o.role}
+                      </span>
+                    )}
+                    <span className="font-medium">{o.name}</span>
+                    {o.note && (
+                      <span className="ml-1 text-sm text-gray-500">
+                        （{o.note}）
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        )}
       </section>
 
       {/* 関連書類（規程） */}
