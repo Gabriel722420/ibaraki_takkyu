@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── ユニバーサルデザイン：文字サイズ切替の基点 ── */
+html {
+  font-size: 17px;
+}
+html[data-textsize='large'] {
+  font-size: 20px;
+}
+html[data-textsize='xlarge'] {
+  font-size: 23px;
+}
+body {
+  line-height: 1.7;
+}

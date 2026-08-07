@@ -1,0 +1,32 @@
+export type Division = {
+  id: string
+  name: string
+  slug: string
+  sort_order: number
+}
+
+export type DocType = '要項' | '組合せ' | '結果' | '連絡'
+
+export type Tournament = {
+  id: string
+  division_id: string | null
+  fiscal_year: number
+  title: string
+  event_date: string | null
+  venue: string | null
+  summary: string | null
+  is_published: boolean
+  archived_at: string | null
+  division?: Division | null
+}
+
+export type TournamentDocument = {
+  id: string
+  tournament_id: string
+  doc_type: DocType
+  title: string
+  file_path: string | null
+  external_url: string | null
+  sort_order: number
+  is_published: boolean
+}

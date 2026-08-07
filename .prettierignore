@@ -1,0 +1,5 @@
+node_modules
+.next
+*.sql
+package-lock.json
+next-env.d.ts
