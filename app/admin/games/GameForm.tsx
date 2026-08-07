@@ -10,6 +10,7 @@ import {
   inputClass,
   useSaveState,
 } from '@/components/admin/FormKit'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Division, Game } from '@/lib/types'
 
 export function GameForm({
@@ -34,6 +35,9 @@ export function GameForm({
   const [venue, setVenue] = useState(game?.venue ?? '')
   const [summary, setSummary] = useState(game?.summary ?? '')
   const [isPublished, setIsPublished] = useState(game?.is_published ?? false)
+  const [imagePath, setImagePath] = useState<string | null>(
+    game?.image_path ?? null,
+  )
 
   const canSave = title.trim().length > 0 && Number(fiscalYear) > 0
 
@@ -46,6 +50,7 @@ export function GameForm({
       venue,
       summary,
       is_published: isPublished,
+      image_path: imagePath,
     }
     run(async () => {
       if (editing) {
@@ -115,6 +120,14 @@ export function GameForm({
           onChange={(e) => setSummary(e.target.value)}
           rows={4}
           className={inputClass}
+        />
+      </Field>
+
+      <Field label="写真" hint="任意・自動圧縮されます">
+        <ImageUploader
+          prefix="games"
+          value={imagePath}
+          onChange={setImagePath}
         />
       </Field>
 

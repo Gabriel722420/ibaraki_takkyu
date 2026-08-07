@@ -9,6 +9,7 @@ export type AnnouncementInput = {
   published_at: string // YYYY-MM-DD（timestamptz へキャスト）
   is_published: boolean
   is_pinned: boolean
+  image_path: string | null
 }
 
 function revalidateAll(id?: string) {
@@ -25,6 +26,7 @@ function normalize(input: AnnouncementInput): AnnouncementInput {
     published_at: input.published_at,
     is_published: input.is_published,
     is_pinned: input.is_pinned,
+    image_path: input.image_path || null,
   }
 }
 

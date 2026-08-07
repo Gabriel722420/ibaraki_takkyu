@@ -10,6 +10,12 @@ type LinkedDoc = {
   external_url: string | null
 }
 
+// images バケットの公開URL解決（クライアント可・純粋関数）
+export function resolveImageUrl(path: string | null): string | null {
+  if (!path) return null
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${path}`
+}
+
 // Supabase Storage / 外部リンクの URL 解決
 export function resolveDocUrl(
   doc: LinkedDoc,

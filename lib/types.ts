@@ -14,6 +14,8 @@ export type Announcement = {
   published_at: string
   is_published: boolean
   is_pinned: boolean
+  image_path: string | null
+  publish_at: string | null
 }
 
 export type Resource = {
@@ -45,6 +47,8 @@ export type Game = {
   summary: string | null
   is_published: boolean
   archived_at: string | null
+  image_path: string | null
+  publish_at: string | null
   division?: Division | null
 }
 

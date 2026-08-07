@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getGame } from '@/lib/queries'
-import { resolveDocUrl, DOC_ORDER } from '@/lib/docs'
+import { resolveDocUrl, resolveImageUrl, DOC_ORDER } from '@/lib/docs'
 
 export const revalidate = 300
 
@@ -30,6 +30,14 @@ export default async function GameDetail({
       <h1 className="mb-3 text-2xl leading-snug font-bold">
         {game.title}
       </h1>
+      {resolveImageUrl(game.image_path) && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={resolveImageUrl(game.image_path)!}
+          alt=""
+          className="mb-3 w-full max-w-full rounded-lg border"
+        />
+      )}
       {game.venue && (
         <p className="mb-1 text-gray-700">会場：{game.venue}</p>
       )}

@@ -11,6 +11,7 @@ export type GameInput = {
   venue: string | null
   summary: string | null
   is_published: boolean
+  image_path: string | null
 }
 
 function revalidateAll(id?: string) {
@@ -29,6 +30,7 @@ function normalize(input: GameInput): GameInput {
     venue: input.venue?.trim() || null,
     summary: input.summary?.trim() || null,
     is_published: input.is_published,
+    image_path: input.image_path || null,
   }
 }
 

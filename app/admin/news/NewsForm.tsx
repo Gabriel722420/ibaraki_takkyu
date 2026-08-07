@@ -13,6 +13,7 @@ import {
   inputClass,
   useSaveState,
 } from '@/components/admin/FormKit'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 import type { Announcement } from '@/lib/types'
 
 export function NewsForm({
@@ -35,6 +36,9 @@ export function NewsForm({
     announcement?.is_published ?? false,
   )
   const [isPinned, setIsPinned] = useState(announcement?.is_pinned ?? false)
+  const [imagePath, setImagePath] = useState<string | null>(
+    announcement?.image_path ?? null,
+  )
 
   const canSave = title.trim().length > 0 && publishedAt.length > 0
 
@@ -45,6 +49,7 @@ export function NewsForm({
       published_at: publishedAt,
       is_published: isPublished,
       is_pinned: isPinned,
+      image_path: imagePath,
     }
     run(async () => {
       if (editing) {
@@ -73,6 +78,14 @@ export function NewsForm({
           onChange={(e) => setBody(e.target.value)}
           rows={8}
           className={inputClass}
+        />
+      </Field>
+
+      <Field label="写真" hint="任意・自動圧縮されます">
+        <ImageUploader
+          prefix="news"
+          value={imagePath}
+          onChange={setImagePath}
         />
       </Field>
 
