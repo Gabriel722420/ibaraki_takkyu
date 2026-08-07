@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { togglePublish, deleteTournament } from './actions'
+import { togglePublish, deleteGame } from './actions'
 
-export function TournamentRowActions({
+export function GameRowActions({
   id,
   isPublished,
 }: {
@@ -32,7 +32,7 @@ export function TournamentRowActions({
       return
     setBusy(true)
     try {
-      await deleteTournament({ id })
+      await deleteGame({ id })
       router.refresh()
     } finally {
       setBusy(false)

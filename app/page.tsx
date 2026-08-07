@@ -10,7 +10,7 @@ export default function Home() {
       <ul className="space-y-3">
         <li>
           <Link
-            href="/tournaments"
+            href="/games"
             className="block rounded-lg border px-4 py-3 text-lg font-medium active:bg-gray-50"
           >
             大会情報を見る

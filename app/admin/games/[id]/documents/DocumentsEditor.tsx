@@ -8,14 +8,14 @@ import {
   deleteDocument,
 } from './actions'
 import { DOC_ORDER } from '@/lib/docs'
-import type { TournamentDocument, DocType } from '@/lib/types'
+import type { GameDocument, DocType } from '@/lib/types'
 
 export function DocumentsEditor({
-  tournamentId,
+  gameId,
   initialDocs,
 }: {
-  tournamentId: string
-  initialDocs: TournamentDocument[]
+  gameId: string
+  initialDocs: GameDocument[]
 }) {
   const [docType, setDocType] = useState<DocType>('要項')
   const [pending, setPending] = useState<{
@@ -29,7 +29,7 @@ export function DocumentsEditor({
     setSaving(true)
     try {
       await addDocument({
-        tournamentId,
+        gameId,
         docType,
         title: pending.title,
         filePath: pending.filePath,
@@ -61,7 +61,7 @@ export function DocumentsEditor({
 
         {!pending ? (
           <PdfUploader
-            tournamentId={tournamentId}
+            gameId={gameId}
             onUploaded={({ filePath, originalName }) =>
               setPending({ filePath, title: originalName })
             }
@@ -101,7 +101,7 @@ export function DocumentsEditor({
         <h2 className="mb-2 font-bold">登録済みの資料</h2>
         <ul className="space-y-3">
           {initialDocs.map((doc) => (
-            <DocRow key={doc.id} doc={doc} tournamentId={tournamentId} />
+            <DocRow key={doc.id} doc={doc} gameId={gameId} />
           ))}
           {initialDocs.length === 0 && (
             <li className="text-gray-500">まだありません。</li>
@@ -114,10 +114,10 @@ export function DocumentsEditor({
 
 function DocRow({
   doc,
-  tournamentId,
+  gameId,
 }: {
-  doc: TournamentDocument
-  tournamentId: string
+  doc: GameDocument
+  gameId: string
 }) {
   const [title, setTitle] = useState(doc.title)
   const [type, setType] = useState<DocType>(doc.doc_type)
@@ -128,9 +128,9 @@ function DocRow({
     setBusy(true)
     try {
       if (title !== doc.title)
-        await renameDocument({ id: doc.id, tournamentId, title })
+        await renameDocument({ id: doc.id, gameId, title })
       if (type !== doc.doc_type)
-        await updateDocType({ id: doc.id, tournamentId, docType: type })
+        await updateDocType({ id: doc.id, gameId, docType: type })
     } finally {
       setBusy(false)
     }
@@ -141,7 +141,7 @@ function DocRow({
     try {
       await deleteDocument({
         id: doc.id,
-        tournamentId,
+        gameId,
         filePath: doc.file_path,
       })
     } finally {

@@ -1,41 +1,41 @@
 import { notFound } from 'next/navigation'
-import { getTournament } from '@/lib/queries'
+import { getGame } from '@/lib/queries'
 import { resolveDocUrl, DOC_ORDER } from '@/lib/docs'
 
 export const revalidate = 300
 
-export default async function TournamentDetail({
+export default async function GameDetail({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const { tournament, documents } = await getTournament(id)
-  if (!tournament) notFound()
+  const { game, documents } = await getGame(id)
+  if (!game) notFound()
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6">
       <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
-        {tournament.division?.name && (
+        {game.division?.name && (
           <span className="rounded bg-gray-100 px-2 py-0.5">
-            {tournament.division.name}
+            {game.division.name}
           </span>
         )}
         <span>
-          {tournament.event_date
-            ? formatDate(tournament.event_date)
+          {game.event_date
+            ? formatDate(game.event_date)
             : '日程調整中'}
         </span>
       </div>
       <h1 className="mb-3 text-2xl leading-snug font-bold">
-        {tournament.title}
+        {game.title}
       </h1>
-      {tournament.venue && (
-        <p className="mb-1 text-gray-700">会場：{tournament.venue}</p>
+      {game.venue && (
+        <p className="mb-1 text-gray-700">会場：{game.venue}</p>
       )}
-      {tournament.summary && (
+      {game.summary && (
         <p className="mb-6 leading-relaxed whitespace-pre-wrap text-gray-800">
-          {tournament.summary}
+          {game.summary}
         </p>
       )}
 

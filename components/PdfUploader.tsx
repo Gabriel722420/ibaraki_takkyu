@@ -5,10 +5,10 @@ import { createClient } from '@/lib/supabase/client'
 const MAX_BYTES = 25 * 1024 * 1024 // 25MB
 
 export function PdfUploader({
-  tournamentId,
+  gameId,
   onUploaded,
 }: {
-  tournamentId: string
+  gameId: string
   onUploaded: (r: { filePath: string; originalName: string }) => void
 }) {
   const [busy, setBusy] = useState(false)
@@ -28,7 +28,7 @@ export function PdfUploader({
     try {
       const supabase = createClient()
       const ext = (file.name.split('.').pop() || 'pdf').toLowerCase()
-      const filePath = `${tournamentId}/${crypto.randomUUID()}.${ext}` // 物理パスは固定・不変
+      const filePath = `${gameId}/${crypto.randomUUID()}.${ext}` // 物理パスは固定・不変
       const { error: upErr } = await supabase.storage
         .from('documents')
         .upload(filePath, file, {

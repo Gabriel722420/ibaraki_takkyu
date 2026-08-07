@@ -12,7 +12,7 @@ export default async function AdminHome() {
       <ul className="space-y-3">
         <li>
           <Link
-            href="/admin/tournaments"
+            href="/admin/games"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >
             大会の管理

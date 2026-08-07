@@ -3,34 +3,34 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  createTournament,
-  updateTournament,
-  type TournamentInput,
+  createGame,
+  updateGame,
+  type GameInput,
 } from './actions'
-import type { Division, Tournament } from '@/lib/types'
+import type { Division, Game } from '@/lib/types'
 
-export function TournamentForm({
+export function GameForm({
   divisions,
-  tournament,
+  game,
   defaultFiscalYear,
 }: {
   divisions: Division[]
-  tournament?: Tournament
+  game?: Game
   defaultFiscalYear: number
 }) {
   const router = useRouter()
-  const editing = !!tournament
+  const editing = !!game
 
-  const [divisionId, setDivisionId] = useState(tournament?.division_id ?? '')
+  const [divisionId, setDivisionId] = useState(game?.division_id ?? '')
   const [fiscalYear, setFiscalYear] = useState(
-    String(tournament?.fiscal_year ?? defaultFiscalYear),
+    String(game?.fiscal_year ?? defaultFiscalYear),
   )
-  const [title, setTitle] = useState(tournament?.title ?? '')
-  const [eventDate, setEventDate] = useState(tournament?.event_date ?? '')
-  const [venue, setVenue] = useState(tournament?.venue ?? '')
-  const [summary, setSummary] = useState(tournament?.summary ?? '')
+  const [title, setTitle] = useState(game?.title ?? '')
+  const [eventDate, setEventDate] = useState(game?.event_date ?? '')
+  const [venue, setVenue] = useState(game?.venue ?? '')
+  const [summary, setSummary] = useState(game?.summary ?? '')
   const [isPublished, setIsPublished] = useState(
-    tournament?.is_published ?? false,
+    game?.is_published ?? false,
   )
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -40,7 +40,7 @@ export function TournamentForm({
   async function save() {
     setSaving(true)
     setError(null)
-    const values: TournamentInput = {
+    const values: GameInput = {
       division_id: divisionId || null,
       fiscal_year: Number(fiscalYear),
       title,
@@ -51,11 +51,11 @@ export function TournamentForm({
     }
     try {
       if (editing) {
-        await updateTournament({ id: tournament!.id, values })
+        await updateGame({ id: game!.id, values })
       } else {
-        await createTournament(values)
+        await createGame(values)
       }
-      router.push('/admin/tournaments')
+      router.push('/admin/games')
       router.refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : '保存に失敗しました。')
@@ -155,12 +155,12 @@ export function TournamentForm({
         >
           {saving ? '保存中…' : editing ? '更新する' : '作成する'}
         </button>
-        <Link href="/admin/tournaments" className="rounded border px-4 py-2">
+        <Link href="/admin/games" className="rounded border px-4 py-2">
           一覧へ戻る
         </Link>
         {editing && (
           <Link
-            href={`/admin/tournaments/${tournament!.id}/documents`}
+            href={`/admin/games/${game!.id}/documents`}
             className="rounded border px-4 py-2"
           >
             資料(PDF)の管理

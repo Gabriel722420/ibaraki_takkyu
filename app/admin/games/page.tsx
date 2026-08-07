@@ -1,20 +1,20 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/admin'
-import { listTournamentsAdmin } from '@/lib/queries'
-import { TournamentRowActions } from './TournamentRowActions'
+import { listGamesAdmin } from '@/lib/queries'
+import { GameRowActions } from './GameRowActions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AdminTournamentsPage() {
+export default async function AdminGamesPage() {
   await requireAdmin()
-  const tournaments = await listTournamentsAdmin()
+  const games = await listGamesAdmin()
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6">
       <div className="mb-4 flex items-center justify-between gap-2">
         <h1 className="text-xl font-bold">大会の管理</h1>
         <Link
-          href="/admin/tournaments/new"
+          href="/admin/games/new"
           className="rounded bg-black px-4 py-2 text-white"
         >
           新規作成
@@ -22,7 +22,7 @@ export default async function AdminTournamentsPage() {
       </div>
 
       <ul className="space-y-3">
-        {tournaments.map((t) => (
+        {games.map((t) => (
           <li key={t.id} className="rounded-lg border p-3">
             <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
               <span
@@ -47,22 +47,22 @@ export default async function AdminTournamentsPage() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Link
-                href={`/admin/tournaments/${t.id}/edit`}
+                href={`/admin/games/${t.id}/edit`}
                 className="rounded border px-3 py-1.5 text-sm"
               >
                 編集
               </Link>
               <Link
-                href={`/admin/tournaments/${t.id}/documents`}
+                href={`/admin/games/${t.id}/documents`}
                 className="rounded border px-3 py-1.5 text-sm"
               >
                 資料(PDF)
               </Link>
-              <TournamentRowActions id={t.id} isPublished={t.is_published} />
+              <GameRowActions id={t.id} isPublished={t.is_published} />
             </div>
           </li>
         ))}
-        {tournaments.length === 0 && (
+        {games.length === 0 && (
           <li className="py-8 text-center text-gray-500">
             まだ大会がありません。「新規作成」から追加してください。
           </li>

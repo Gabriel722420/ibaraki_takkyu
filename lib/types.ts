@@ -7,7 +7,7 @@ export type Division = {
 
 export type DocType = '要項' | '組合せ' | '結果' | '連絡'
 
-export type Tournament = {
+export type Game = {
   id: string
   division_id: string | null
   fiscal_year: number
@@ -20,9 +20,9 @@ export type Tournament = {
   division?: Division | null
 }
 
-export type TournamentDocument = {
+export type GameDocument = {
   id: string
-  tournament_id: string
+  game_id: string
   doc_type: DocType
   title: string
   file_path: string | null

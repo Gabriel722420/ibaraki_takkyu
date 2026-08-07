@@ -1,11 +1,11 @@
-import type { TournamentDocument, DocType } from './types'
+import type { GameDocument, DocType } from './types'
 
 // 要項→組合せ→結果→連絡 の固定表示順
 export const DOC_ORDER: DocType[] = ['要項', '組合せ', '結果', '連絡']
 
 // Supabase Storage / 外部リンクの URL 解決
 export function resolveDocUrl(
-  doc: TournamentDocument,
+  doc: GameDocument,
   opts: { download?: boolean } = {},
 ): string | null {
   if (doc.external_url) return doc.external_url

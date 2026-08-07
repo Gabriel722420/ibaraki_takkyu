@@ -5,7 +5,7 @@ import { TextSizeToggle } from './TextSizeToggle'
 const NAV = [
   { href: '/', label: 'トップ' },
   { href: '/news', label: 'おしらせ' },
-  { href: '/tournaments', label: '大会情報' },
+  { href: '/games', label: '大会情報' },
   { href: '/registration', label: '登録・資格情報' },
   { href: '/about', label: '連盟情報' },
 ]

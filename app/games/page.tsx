@@ -1,16 +1,16 @@
 import Link from 'next/link'
-import { listTournaments } from '@/lib/queries'
+import { listGames } from '@/lib/queries'
 
 export const revalidate = 300
 
-export default async function TournamentsPage({
+export default async function GamesPage({
   searchParams,
 }: {
   searchParams: Promise<{ year?: string; division?: string }>
 }) {
   const sp = await searchParams
   const fiscalYear = sp.year ? Number(sp.year) : undefined
-  const tournaments = await listTournaments({
+  const games = await listGames({
     fiscalYear,
     divisionId: sp.division,
   })
@@ -19,10 +19,10 @@ export default async function TournamentsPage({
     <main className="mx-auto max-w-2xl px-4 py-6">
       <h1 className="mb-4 text-2xl font-bold">大会情報</h1>
       <ul className="divide-y divide-gray-200">
-        {tournaments.map((t) => (
+        {games.map((t) => (
           <li key={t.id}>
             <Link
-              href={`/tournaments/${t.id}`}
+              href={`/games/${t.id}`}
               className="flex flex-col gap-1 py-4 active:bg-gray-50"
             >
               <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -41,7 +41,7 @@ export default async function TournamentsPage({
             </Link>
           </li>
         ))}
-        {tournaments.length === 0 && (
+        {games.length === 0 && (
           <li className="py-8 text-center text-gray-500">
             大会情報はまだありません。
           </li>

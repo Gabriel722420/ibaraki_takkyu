@@ -5,8 +5,8 @@ import { requireAdmin } from '@/lib/admin'
 
 function revalidateAll() {
   revalidatePath('/admin/divisions')
-  revalidatePath('/admin/tournaments') // 部門名を表示
-  revalidatePath('/tournaments') // 公開側も部門名を表示
+  revalidatePath('/admin/games') // 部門名を表示
+  revalidatePath('/games') // 公開側も部門名を表示
 }
 
 // slug は unique not null。未入力ならランダム生成で衝突回避。
