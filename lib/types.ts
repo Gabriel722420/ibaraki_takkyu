@@ -7,6 +7,15 @@ export type Division = {
 
 export type DocType = '要項' | '組合せ' | '結果' | '連絡'
 
+export type Announcement = {
+  id: string
+  title: string
+  body: string | null
+  published_at: string
+  is_published: boolean
+  is_pinned: boolean
+}
+
 export type Game = {
   id: string
   division_id: string | null

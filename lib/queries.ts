@@ -1,6 +1,37 @@
 import { createClient } from './supabase/server'
 import { DOC_ORDER } from './docs'
-import type { Division, Game, GameDocument } from './types'
+import type { Announcement, Division, Game, GameDocument } from './types'
+
+// TOP用：最新のお知らせ（公開のみ・固定を優先し公開日降順）
+export async function listLatestAnnouncements(
+  limit = 5,
+): Promise<Announcement[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .eq('is_published', true)
+    .order('is_pinned', { ascending: false })
+    .order('published_at', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return (data ?? []) as Announcement[]
+}
+
+// TOP用：近日の大会（公開のみ・今日以降を event_date 昇順）
+export async function listUpcomingGames(limit = 5): Promise<Game[]> {
+  const supabase = await createClient()
+  const today = new Date().toISOString().slice(0, 10)
+  const { data, error } = await supabase
+    .from('games')
+    .select('*, division:divisions(*)')
+    .eq('is_published', true)
+    .gte('event_date', today)
+    .order('event_date', { ascending: true })
+    .limit(limit)
+  if (error) throw error
+  return (data ?? []) as unknown as Game[]
+}
 
 // 部門一覧（公開/管理共通・sort_order 順）。divisions は公開読取可。
 export async function listDivisions(): Promise<Division[]> {

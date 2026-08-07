@@ -2,6 +2,7 @@ import './globals.css'
 import { cookies } from 'next/headers'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SiteHeader } from '@/components/SiteHeader'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata = { title: '一般社団法人茨城県卓球連盟' }
 
@@ -16,6 +17,7 @@ export default async function RootLayout({
       <body>
         <SiteHeader />
         {children}
+        <SiteFooter />
         <GoogleAnalytics gaId="G-6NZR9MQ159" />
       </body>
     </html>

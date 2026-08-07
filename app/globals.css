@@ -1,22 +1,19 @@
 @import 'tailwindcss';
 
+/* ── デザイントークン（#0049a2 基調・全体で使用） ──
+   @theme 定義により Tailwind ユーティリティ（bg-primary 等）と
+   CSS変数 var(--color-primary) の双方で参照できる。 */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-primary: #0049a2;
+  --color-primary-foreground: #ffffff;
+  --color-border: #e5e7eb;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #1a1a1a;
 }
 
 body {
@@ -25,7 +22,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ── ユニバーサルデザイン：文字サイズ切替の基点 ── */
+/* ── ユニバーサルデザイン：文字サイズ切替の基点（維持） ── */
 html {
   font-size: 17px;
 }
