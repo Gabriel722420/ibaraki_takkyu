@@ -2,6 +2,7 @@ import {
   getAboutSettings,
   listOfficers,
   getResourcesByCategory,
+  getSettings,
 } from '@/lib/queries'
 import { resolveDocUrl } from '@/lib/docs'
 import type { Officer } from '@/lib/types'
@@ -44,11 +45,14 @@ function groupOfficers(
 }
 
 export default async function AboutPage() {
-  const [about, officers, docs] = await Promise.all([
+  const [about, officers, docs, settings] = await Promise.all([
     getAboutSettings(),
     listOfficers(),
     getResourcesByCategory('規程'),
+    // 連絡先は policy と共通（policy_contact）。編集は /admin/policy に集約し二重管理を避ける。
+    getSettings(['policy_contact']),
   ])
+  const contact = settings.policy_contact ?? ''
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6">
@@ -142,13 +146,16 @@ export default async function AboutPage() {
         </ul>
       </section>
 
-      {/* 連絡先 */}
+      {/* 連絡先（settings.policy_contact を policy と共通参照。編集は /admin/policy） */}
       <section>
-        <h2 className="mb-2 text-xl font-bold">連絡先</h2>
-        {/* TODO: 連絡先はフッター/管理から追記予定 */}
-        <p className="leading-relaxed text-gray-600">
-          お問い合わせは各担当までご連絡ください。
-        </p>
+        <h2 className="mb-2 text-xl font-bold">お問い合わせ先</h2>
+        {contact ? (
+          <p className="leading-relaxed whitespace-pre-wrap text-gray-800">
+            {contact}
+          </p>
+        ) : (
+          <p className="text-gray-500">準備中です。</p>
+        )}
       </section>
     </main>
   )
