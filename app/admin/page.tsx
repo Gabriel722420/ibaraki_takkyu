@@ -12,6 +12,17 @@ export default async function AdminHome() {
       <ul className="space-y-3">
         <li>
           <Link
+            href="/admin/account"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            アカウント設定（パスワード変更）
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              ログイン中の管理者パスワードを変更
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/admin/games"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >
