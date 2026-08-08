@@ -128,14 +128,15 @@ body {
   --input: #e5e7eb;
   --ring: #0049a2;
   --radius: 0.5rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1a1a1a;
-  --sidebar-primary: #0049a2;
+  /* wp-admin 風の暗色サイドバー（公開側は sidebar-* を使わないため非影響） */
+  --sidebar: #1d2327;
+  --sidebar-foreground: #f0f0f1;
+  --sidebar-primary: #2271b1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eaf1fb;
-  --sidebar-accent-foreground: #0049a2;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #0049a2;
+  --sidebar-accent: #2271b1;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2c3338;
+  --sidebar-ring: #2271b1;
 }
 
 /* ── shadcn の既定ボーダー色は「管理スコープのみ」に限定（公開の bare border を変えない） ── */
