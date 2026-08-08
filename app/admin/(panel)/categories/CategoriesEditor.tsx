@@ -88,13 +88,13 @@ function AddForm({ parents }: { parents: Category[] }) {
             type="number"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-24 rounded border px-3 py-2"
+            className="w-24 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
         <button
           onClick={add}
           disabled={busy || !name.trim()}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           {busy ? '追加中…' : '追加する'}
         </button>
@@ -164,12 +164,12 @@ function Row({
           <input
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="flex-1 rounded border px-3 py-2"
+            className="flex-1 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
           <select
             value={parentId}
             onChange={(e) => setParentId(e.target.value)}
-            className="rounded border px-2 py-2"
+            className="rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <option value="">親なし</option>
             {parents.map((p) => (
@@ -182,7 +182,7 @@ function Row({
             type="number"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-20 rounded border px-3 py-2"
+            className="w-20 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
       </div>
@@ -190,14 +190,14 @@ function Row({
         <button
           onClick={save}
           disabled={busy || !name.trim()}
-          className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
+          className="inline-flex items-center rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           保存
         </button>
         <button
           onClick={remove}
           disabled={busy}
-          className="rounded border px-3 py-1.5 text-sm text-red-600 disabled:opacity-50"
+          className="inline-flex items-center rounded-lg border border-input px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-50"
         >
           削除
         </button>

@@ -55,13 +55,13 @@ function AddForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="部門名（例：一般）"
-          className="w-full rounded border px-3 py-2"
+          className="w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="slug（英数字・空欄なら自動生成）"
-          className="w-full rounded border px-3 py-2"
+          className="w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">表示順</span>
@@ -69,13 +69,13 @@ function AddForm() {
             type="number"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-24 rounded border px-3 py-2"
+            className="w-24 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
         <button
           onClick={add}
           disabled={busy || !name.trim()}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           {busy ? '追加中…' : '追加する'}
         </button>
@@ -132,20 +132,20 @@ function DivisionRow({ division }: { division: Division }) {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+          className="w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
         <div className="flex items-center gap-2">
           <input
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="flex-1 rounded border px-3 py-2"
+            className="flex-1 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
           <span className="text-sm text-gray-600">順</span>
           <input
             type="number"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-20 rounded border px-3 py-2"
+            className="w-20 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
       </div>
@@ -153,14 +153,14 @@ function DivisionRow({ division }: { division: Division }) {
         <button
           onClick={save}
           disabled={busy || !dirty || !name.trim()}
-          className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
+          className="inline-flex items-center rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           保存
         </button>
         <button
           onClick={remove}
           disabled={busy}
-          className="rounded border px-3 py-1.5 text-sm text-red-600 disabled:opacity-50"
+          className="inline-flex items-center rounded-lg border border-input px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-50"
         >
           削除
         </button>

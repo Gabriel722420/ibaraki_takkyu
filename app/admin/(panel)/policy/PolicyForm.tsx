@@ -60,7 +60,7 @@ export function PolicyForm({
             value={f.value}
             onChange={(e) => f.set(e.target.value)}
             rows={6}
-            className="w-full rounded border px-3 py-2"
+            className="w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
       ))}
@@ -72,11 +72,11 @@ export function PolicyForm({
         <button
           onClick={save}
           disabled={saving}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/80 disabled:opacity-50"
         >
           {saving ? '保存中…' : '保存する'}
         </button>
-        <Link href="/admin" className="rounded border px-4 py-2">
+        <Link href="/admin" className="inline-flex items-center rounded-lg border border-input px-3 py-2 text-sm hover:bg-muted">
           管理トップ
         </Link>
       </div>
