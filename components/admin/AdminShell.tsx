@@ -76,10 +76,7 @@ export function AdminShell({
           <SidebarGroup>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname === '/admin' || undefined}
-                >
+                <SidebarMenuButton asChild isActive={pathname === '/admin'}>
                   <Link href="/admin">
                     <LayoutDashboard />
                     ダッシュボード
@@ -98,7 +95,7 @@ export function AdminShell({
                     <SidebarMenuItem key={it.href}>
                       <SidebarMenuButton
                         asChild
-                        isActive={isActive(pathname, it.href) || undefined}
+                        isActive={isActive(pathname, it.href)}
                         tooltip={it.label}
                       >
                         <Link href={it.href}>

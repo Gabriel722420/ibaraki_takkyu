@@ -140,10 +140,19 @@ body {
   --sidebar-ring: #2271b1;
 }
 
-/* 現在地(アクティブ)のメニューのみ #0049a2 でハイライト（非アクティブは塗らない）。
-   非アクティブは AdminShell 側で data-active 属性自体を付けない。 */
-.admin-shell [data-sidebar='menu-button'][data-active] {
-  background-color: var(--color-primary);
+/* サイドバー項目の塗りを確定的に制御（shadcn は data-active="false" 属性が常に付くため、
+   属性の有無ではなく data-active="true" のみを対象にする）。unlayered ルールなので
+   Tailwind ユーティリティ(data-active:/hover:)より優先される。 */
+.admin-shell [data-sidebar='menu-button'] {
+  background-color: transparent; /* 非アクティブは無地 */
+  color: #c3c4c7;
+}
+.admin-shell [data-sidebar='menu-button']:hover {
+  background-color: rgba(255, 255, 255, 0.06); /* ホバーのみ微明 */
+  color: #ffffff;
+}
+.admin-shell [data-sidebar='menu-button'][data-active='true'] {
+  background-color: var(--color-primary); /* 現在地のみ #0049a2 */
   color: #ffffff;
 }
 
