@@ -10,7 +10,7 @@ export default async function AdminDivisionsPage() {
   const divisions = await listDivisions()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <div className="mb-4 flex items-center justify-between gap-2">
         <h1 className="text-xl font-bold">部門の管理</h1>
         <Link href="/admin" className="rounded border px-4 py-2">
@@ -18,6 +18,6 @@ export default async function AdminDivisionsPage() {
         </Link>
       </div>
       <DivisionsEditor divisions={divisions} />
-    </main>
+    </div>
   )
 }

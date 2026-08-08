@@ -15,9 +15,9 @@ export default async function EditOfficerPage({
   if (!officer) return <p className="p-4">役員が見つかりません。</p>
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="mb-4 text-xl font-bold">役員の編集</h1>
       <OfficerForm officer={officer} />
-    </main>
+    </div>
   )
 }

@@ -19,9 +19,9 @@ export default async function EditAnnouncementPage({
   const today = new Date().toISOString().slice(0, 10)
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="mb-4 text-xl font-bold">おしらせの編集</h1>
       <NewsForm announcement={announcement} today={today} categories={categories} />
-    </main>
+    </div>
   )
 }

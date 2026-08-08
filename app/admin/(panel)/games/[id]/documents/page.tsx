@@ -12,9 +12,9 @@ export default async function Page({
   const { game, documents } = await getGameAdmin(id)
   if (!game) return <p className="p-4">大会が見つかりません。</p>
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="mb-4 text-xl font-bold">{game.title}／資料の管理</h1>
       <DocumentsEditor gameId={id} initialDocs={documents} />
-    </main>
+    </div>
   )
 }

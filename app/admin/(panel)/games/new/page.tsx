@@ -15,12 +15,12 @@ export default async function NewGamePage() {
   const divisions = await listDivisions()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="mb-4 text-xl font-bold">大会の新規作成</h1>
       <GameForm
         divisions={divisions}
         defaultFiscalYear={currentFiscalYear()}
       />
-    </main>
+    </div>
   )
 }

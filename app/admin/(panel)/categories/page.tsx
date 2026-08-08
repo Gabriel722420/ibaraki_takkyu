@@ -10,7 +10,7 @@ export default async function AdminCategoriesPage() {
   const categories = await listCategories()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl space-y-4">
       <div className="mb-4 flex items-center justify-between gap-2">
         <h1 className="text-xl font-bold">おしらせカテゴリの管理</h1>
         <Link href="/admin/news" className="rounded border px-4 py-2">
@@ -18,6 +18,6 @@ export default async function AdminCategoriesPage() {
         </Link>
       </div>
       <CategoriesEditor categories={categories} />
-    </main>
+    </div>
   )
 }
