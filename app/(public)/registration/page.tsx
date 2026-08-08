@@ -22,7 +22,7 @@ export default async function RegistrationPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
       <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
         登録・資格情報
       </h1>
@@ -30,7 +30,7 @@ export default async function RegistrationPage() {
       {groups.map((g) => (
         <section key={g.category} className="mb-8">
           <h2 className="mb-2 text-xl font-bold">{g.category}</h2>
-          <ul className="space-y-2">
+          <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {g.items.map((r) => {
               const url = resolveDocUrl(r)
               return (
@@ -40,7 +40,7 @@ export default async function RegistrationPage() {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block rounded-lg border border-gray-300 px-4 py-3 text-base font-medium active:bg-gray-50"
+                      className="block h-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base font-medium transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
                     >
                       {r.title}
                       {r.external_url && (
@@ -50,7 +50,7 @@ export default async function RegistrationPage() {
                       )}
                     </a>
                   ) : (
-                    <span className="block rounded-lg border border-gray-200 px-4 py-3 text-base text-gray-500">
+                    <span className="block h-full rounded-lg border border-gray-200 px-4 py-3 text-base text-gray-500">
                       {r.title}
                     </span>
                   )}

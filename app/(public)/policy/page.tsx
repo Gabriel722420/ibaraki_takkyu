@@ -10,7 +10,7 @@ export default async function PolicyPage() {
   ])
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-3xl px-4 py-6 md:px-6">
       <h1 className="mb-6 border-l-4 border-primary pl-2 text-2xl font-bold">
         このサイトについて・プライバシーポリシー
       </h1>

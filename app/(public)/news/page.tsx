@@ -40,7 +40,7 @@ export default async function NewsPage({
     slug ? `/news?category=${encodeURIComponent(slug)}` : '/news'
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
       <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
         おしらせ
       </h1>
@@ -87,12 +87,12 @@ export default async function NewsPage({
         {total}件
       </p>
 
-      <ul className="divide-y divide-gray-200">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((a) => (
           <li key={a.id}>
             <Link
               href={`/news/${a.id}`}
-              className="flex flex-col gap-1 py-4 active:bg-gray-50"
+              className="flex h-full flex-col gap-1 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
             >
               <span className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
                 {a.is_pinned && (
@@ -114,7 +114,7 @@ export default async function NewsPage({
           </li>
         ))}
         {items.length === 0 && (
-          <li className="py-8 text-center text-gray-500">
+          <li className="col-span-full py-8 text-center text-gray-500">
             該当するお知らせはありません。
           </li>
         )}

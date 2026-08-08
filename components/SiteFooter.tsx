@@ -10,7 +10,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="mt-12 bg-primary text-primary-foreground">
-      <div className="mx-auto max-w-2xl px-4 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2">
           {/* 組織情報・問い合わせ */}
           <div>
@@ -31,7 +31,7 @@ export async function SiteFooter() {
           {/* サイト内導線 */}
           <nav aria-label="フッターメニュー">
             <p className="text-sm font-bold text-white/90">サイト内メニュー</p>
-            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3">
               {NAV.map((n) => (
                 <li key={n.href}>
                   <Link

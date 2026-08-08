@@ -15,7 +15,7 @@ export default async function GameDetail({
   if (!game) notFound()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-3xl px-4 py-6 md:px-6">
       <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
         {game.division?.name && (
           <span className="rounded bg-gray-100 px-2 py-0.5">

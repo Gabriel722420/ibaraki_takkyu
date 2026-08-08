@@ -55,33 +55,35 @@ export default async function AboutPage() {
   const contact = settings.policy_contact ?? ''
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
       <h1 className="mb-6 border-l-4 border-primary pl-2 text-2xl font-bold">
         連盟情報
       </h1>
 
-      {/* 会長挨拶 */}
+      {/* 会長挨拶（長文＝読みやすい行長 max-w-prose に保つ） */}
       <section className="mb-10">
         <h2 className="mb-3 text-xl font-bold">会長挨拶</h2>
-        {about.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={about.image}
-            alt="会長"
-            className="mb-4 w-40 max-w-full rounded-lg border sm:float-right sm:ml-4"
-          />
-        )}
-        {about.greeting && (
-          <p className="leading-relaxed whitespace-pre-wrap text-gray-800">
-            {about.greeting}
-          </p>
-        )}
-        {about.sign && (
-          <p className="mt-4 text-right font-medium text-gray-800">
-            {about.sign}
-          </p>
-        )}
-        <div className="clear-both" />
+        <div className="max-w-prose">
+          {about.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={about.image}
+              alt="会長"
+              className="mb-4 w-40 max-w-full rounded-lg border sm:float-right sm:ml-4"
+            />
+          )}
+          {about.greeting && (
+            <p className="leading-relaxed whitespace-pre-wrap text-gray-800">
+              {about.greeting}
+            </p>
+          )}
+          {about.sign && (
+            <p className="mt-4 text-right font-medium text-gray-800">
+              {about.sign}
+            </p>
+          )}
+          <div className="clear-both" />
+        </div>
       </section>
 
       {/* 役員情報（大分類でグルーピング／1人1行・密度重視） */}
@@ -95,7 +97,7 @@ export default async function AboutPage() {
               <h3 className="mb-2 border-l-2 border-primary pl-2 font-bold text-primary">
                 {g.label}
               </h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 md:grid-cols-3 lg:grid-cols-4">
                 {g.items.map((o) => (
                   <li
                     key={o.id}
@@ -123,7 +125,7 @@ export default async function AboutPage() {
       {/* 関連書類（規程） */}
       <section className="mb-10">
         <h2 className="mb-3 text-xl font-bold">規約・ダウンロード</h2>
-        <ul className="space-y-2">
+        <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {docs.map((d) => {
             const url = resolveDocUrl(d)
             if (!url) return null
@@ -133,7 +135,7 @@ export default async function AboutPage() {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-lg border border-gray-300 px-4 py-3 text-base font-medium active:bg-gray-50"
+                  className="block h-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base font-medium transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
                 >
                   {d.title}
                 </a>
@@ -150,7 +152,7 @@ export default async function AboutPage() {
       <section>
         <h2 className="mb-2 text-xl font-bold">お問い合わせ先</h2>
         {contact ? (
-          <p className="leading-relaxed whitespace-pre-wrap text-gray-800">
+          <p className="max-w-prose leading-relaxed whitespace-pre-wrap text-gray-800">
             {contact}
           </p>
         ) : (

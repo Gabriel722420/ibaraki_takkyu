@@ -8,7 +8,7 @@ export function MainNav() {
 
   return (
     <nav aria-label="メインメニュー" className="border-b border-gray-200 bg-white">
-      <ul className="mx-auto flex max-w-2xl flex-wrap px-2">
+      <ul className="mx-auto flex max-w-6xl flex-wrap px-2 md:px-4 lg:px-6">
         {NAV.map((n) => {
           // トップは完全一致、それ以外は配下も現在地扱い（例 /games/[id]）
           const active =

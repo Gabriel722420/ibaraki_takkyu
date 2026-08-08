@@ -16,7 +16,7 @@ export default async function NewsDetail({
   if (!a) notFound()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-3xl px-4 py-6 md:px-6">
       <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
         {a.is_pinned && (
           <span className="rounded bg-primary px-2 py-0.5 text-primary-foreground">

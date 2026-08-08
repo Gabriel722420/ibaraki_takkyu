@@ -21,7 +21,7 @@ export default async function GamesPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
       <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
         大会情報
       </h1>
@@ -29,7 +29,7 @@ export default async function GamesPage() {
       {years.map((grp) => (
         <section key={grp.year} className="mb-8">
           <h2 className="mb-2 text-xl font-bold">{grp.year}年度</h2>
-          <ul className="divide-y divide-gray-200">
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {grp.items.map((g) => {
               const status = gameStatus({
                 eventDate: g.event_date,
@@ -40,7 +40,7 @@ export default async function GamesPage() {
                 <li key={g.id}>
                   <Link
                     href={`/games/${g.id}`}
-                    className="flex items-center gap-3 py-4 active:bg-gray-50"
+                    className="flex h-full items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">

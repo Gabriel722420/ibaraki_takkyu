@@ -31,11 +31,11 @@ export default async function Home() {
     <main>
       {/* 1. 導入部（#0049a2 を効かせた落ち着いたヘッダーブロック・写真なし） */}
       <section className="bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-2xl px-4 py-10">
+        <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14 lg:px-8">
           <h1 className="text-2xl leading-tight font-bold sm:text-3xl">
             茨城県卓球連盟 公式サイト
           </h1>
-          <p className="mt-3 leading-relaxed text-white/90">
+          <p className="mt-3 max-w-prose leading-relaxed text-white/90">
             一般社団法人茨城県卓球連盟の公式サイトです。
             <br className="hidden sm:block" />
             大会情報・結果・登録・各種資料をご案内します。
@@ -45,10 +45,10 @@ export default async function Home() {
 
       {/* 2. 近日の大会（1行カード・状態バッジ） */}
       <section className="bg-[#f6f7f9]">
-        <div className="mx-auto max-w-2xl px-4 py-8">
+        <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
           <SectionHeading href="/games" label="近日の大会" more="大会情報一覧" />
           {games.length > 0 ? (
-            <ul className="space-y-3">
+            <ul className="grid gap-3 lg:grid-cols-2">
               {games.map((g) => (
                 <li key={g.id}>
                   <GameRow game={g} today={today} />
@@ -63,7 +63,7 @@ export default async function Home() {
 
       {/* 3. おしらせ（カテゴリで2カラム整理） */}
       <section className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-8">
+        <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
           <SectionHeading href="/news" label="おしらせ" more="おしらせ一覧" />
           <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
             <NewsColumn title="大会関連のおしらせ" items={newsGame} />
@@ -74,7 +74,7 @@ export default async function Home() {
 
       {/* 4. 各種情報への入口（アイコン付きカードのグリッド） */}
       <section className="bg-[#f6f7f9]">
-        <div className="mx-auto max-w-2xl px-4 py-8">
+        <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
           <h2 className="mb-4 border-l-4 border-primary pl-2 text-xl font-bold">
             各種情報
           </h2>
@@ -146,7 +146,7 @@ function GameRow({ game: g, today }: { game: Game; today: string }) {
   return (
     <Link
       href={`/games/${g.id}`}
-      className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
+      className="flex h-full items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
