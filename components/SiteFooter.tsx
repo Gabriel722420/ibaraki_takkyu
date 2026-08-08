@@ -1,45 +1,62 @@
 import Link from 'next/link'
 import { NAV } from '@/lib/nav'
+import { getPolicySettings } from '@/lib/queries'
 
-export function SiteFooter() {
+// 公開フッター（#0049a2 基調・写真なし）。組織情報・グロナビ導線・問い合わせ・ポリシーを整然と。
+export async function SiteFooter() {
   const year = new Date().getFullYear()
+  // 問い合わせ先は既存 settings（policy_contact）を流用（空なら該当ブロックを出さない）。
+  const { contact } = await getPolicySettings()
+
   return (
     <footer className="mt-12 bg-primary text-primary-foreground">
-      <div className="mx-auto max-w-2xl px-4 py-8">
-        <p className="text-lg font-bold">一般社団法人茨城県卓球連盟</p>
+      <div className="mx-auto max-w-2xl px-4 py-10">
+        <div className="grid gap-8 sm:grid-cols-2">
+          {/* 組織情報・問い合わせ */}
+          <div>
+            <p className="text-lg font-bold">一般社団法人茨城県卓球連盟</p>
+            <p className="mt-1 text-sm text-white/80">
+              Ibaraki Table Tennis Association
+            </p>
+            {contact && (
+              <div className="mt-4">
+                <p className="text-sm font-bold text-white/90">お問い合わせ</p>
+                <address className="mt-1 text-sm leading-relaxed whitespace-pre-line text-white/90 not-italic">
+                  {contact}
+                </address>
+              </div>
+            )}
+          </div>
 
-        {/* TODO: 住所・連絡先はここに追記できます（例）
-            <address className="mt-2 not-italic text-sm text-white/90">
-              〒310-0000 茨城県水戸市○○ ○-○-○<br />
-              TEL: 000-000-0000 ／ Email: info@example.jp
-            </address>
-        */}
+          {/* サイト内導線 */}
+          <nav aria-label="フッターメニュー">
+            <p className="text-sm font-bold text-white/90">サイト内メニュー</p>
+            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+              {NAV.map((n) => (
+                <li key={n.href}>
+                  <Link
+                    href={n.href}
+                    className="inline-block py-1 underline-offset-4 hover:underline"
+                  >
+                    {n.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/policy"
+                  className="inline-block py-1 underline-offset-4 hover:underline"
+                >
+                  このサイトについて
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
-        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
-          {NAV.map((n) => (
-            <li key={n.href}>
-              <Link
-                href={n.href}
-                className="inline-block py-1 underline-offset-4 hover:underline"
-              >
-                {n.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <p className="mt-6">
-          <Link
-            href="/policy"
-            className="text-sm underline-offset-4 hover:underline"
-          >
-            このサイトについて・プライバシーポリシー
-          </Link>
-        </p>
-
-        <p className="mt-4 text-sm text-white/80">
+        <div className="mt-8 border-t border-white/20 pt-4 text-sm text-white/80">
           © {year} 一般社団法人茨城県卓球連盟
-        </p>
+        </div>
       </div>
     </footer>
   )
