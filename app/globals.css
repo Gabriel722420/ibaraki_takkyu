@@ -128,15 +128,23 @@ body {
   --input: #e5e7eb;
   --ring: #0049a2;
   --radius: 0.5rem;
-  /* wp-admin 風の暗色サイドバー（公開側は sidebar-* を使わないため非影響） */
+  /* wp-admin 風の暗色サイドバー（公開側は sidebar-* を使わないため非影響）。
+     hover は控えめな明色(#2c3338)。現在地の塗りは下の [data-active] ルールで #0049a2。 */
   --sidebar: #1d2327;
   --sidebar-foreground: #f0f0f1;
-  --sidebar-primary: #2271b1;
+  --sidebar-primary: #0049a2;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2271b1;
-  --sidebar-accent-foreground: #ffffff;
+  --sidebar-accent: #2c3338;
+  --sidebar-accent-foreground: #f0f0f1;
   --sidebar-border: #2c3338;
   --sidebar-ring: #2271b1;
+}
+
+/* 現在地(アクティブ)のメニューのみ #0049a2 でハイライト（非アクティブは塗らない）。
+   非アクティブは AdminShell 側で data-active 属性自体を付けない。 */
+.admin-shell [data-sidebar='menu-button'][data-active] {
+  background-color: var(--color-primary);
+  color: #ffffff;
 }
 
 /* ── shadcn の既定ボーダー色は「管理スコープのみ」に限定（公開の bare border を変えない） ── */
