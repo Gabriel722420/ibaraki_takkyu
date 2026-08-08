@@ -15,9 +15,6 @@ export async function SiteFooter() {
           {/* 組織情報・問い合わせ */}
           <div>
             <p className="text-lg font-bold">一般社団法人茨城県卓球連盟</p>
-            <p className="mt-1 text-sm text-white/80">
-              Ibaraki Table Tennis Association
-            </p>
             {contact && (
               <div className="mt-4">
                 <p className="text-sm font-bold text-white/90">お問い合わせ</p>
