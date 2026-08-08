@@ -38,6 +38,9 @@ export default async function AdminHome() {
           <Button variant="outline" asChild>
             <Link href="/admin/resources/new">＋ 新しい資料</Link>
           </Button>
+          <Button variant="outline" asChild>
+            <Link href="/admin/forms/new">＋ 新しい申込フォーム</Link>
+          </Button>
         </div>
       </section>
 

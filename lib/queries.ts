@@ -4,11 +4,43 @@ import type {
   Announcement,
   Category,
   Division,
+  Form,
+  FormField,
   Game,
   GameDocument,
   Officer,
   Resource,
 } from './types'
+
+// ── 申込フォーム（管理側） ──
+export async function listFormsAdmin(): Promise<Form[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('forms')
+    .select('*, game:games(id, title)')
+    .order('updated_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as unknown as Form[]
+}
+
+export async function getFormAdmin(id: string): Promise<{
+  form: Form | null
+  fields: FormField[]
+}> {
+  const supabase = await createClient()
+  const [{ data: form }, { data: fields }] = await Promise.all([
+    supabase.from('forms').select('*, game:games(id, title)').eq('id', id).single(),
+    supabase
+      .from('form_fields')
+      .select('*')
+      .eq('form_id', id)
+      .order('sort_order', { ascending: true }),
+  ])
+  return {
+    form: (form ?? null) as unknown as Form | null,
+    fields: (fields ?? []) as FormField[],
+  }
+}
 
 export type Paged<T> = {
   items: T[]

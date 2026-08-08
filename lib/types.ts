@@ -5,6 +5,44 @@ export type Division = {
   sort_order: number
 }
 
+// ── 申込フォーム ──
+export type FormFieldType =
+  | 'text'
+  | 'textarea'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
+  | 'number'
+  | 'date'
+  | 'email'
+
+export type FormStatus = 'draft' | 'published'
+
+export type FormField = {
+  id: string
+  form_id: string
+  field_type: FormFieldType
+  label: string
+  placeholder: string | null
+  required: boolean
+  options: string[]
+  sort_order: number
+}
+
+export type Form = {
+  id: string
+  game_id: string | null
+  title: string
+  description: string | null
+  slug: string
+  status: FormStatus
+  open_at: string | null
+  close_at: string | null
+  created_at: string
+  updated_at: string
+  game?: { id: string; title: string } | null
+}
+
 export type DocType = '要項' | '組合せ' | '結果' | '連絡'
 
 export type Category = {

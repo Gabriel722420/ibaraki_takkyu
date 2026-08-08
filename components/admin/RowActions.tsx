@@ -2,7 +2,15 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { MoreHorizontal, Pencil, Trash2, ArrowUp, ArrowDown, FileText } from 'lucide-react'
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  FileText,
+  Copy,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
@@ -27,6 +35,7 @@ import {
 type ToggleFn = (input: { id: string; isPublished: boolean }) => Promise<void>
 type DeleteFn = (input: { id: string }) => Promise<void>
 type MoveFn = (input: { id: string; dir: 'up' | 'down' }) => Promise<void>
+type SimpleFn = (input: { id: string }) => Promise<void>
 
 export function RowActions({
   id,
@@ -36,6 +45,7 @@ export function RowActions({
   onToggle,
   onDelete,
   onMove,
+  onDuplicate,
   deleteMessage = 'この項目を削除します。よろしいですか？',
 }: {
   id: string
@@ -45,6 +55,7 @@ export function RowActions({
   onToggle?: ToggleFn
   onDelete: DeleteFn
   onMove?: MoveFn
+  onDuplicate?: SimpleFn
   deleteMessage?: string
 }) {
   const router = useRouter()
@@ -98,6 +109,16 @@ export function RowActions({
               <Link href={docsHref}>
                 <FileText /> 資料(PDF)
               </Link>
+            </DropdownMenuItem>
+          )}
+          {onDuplicate && (
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                run(() => onDuplicate({ id }), '複製しました')
+              }}
+            >
+              <Copy /> 複製
             </DropdownMenuItem>
           )}
           {onMove && (
