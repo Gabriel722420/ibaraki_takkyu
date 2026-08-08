@@ -1,25 +1,15 @@
 'use client'
 import { useState, type ReactNode } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
-// 管理フォーム共通のUI部品（news/games/その他で統一した投稿体験を提供）
+// 管理フォーム共通のUI部品（shadcn ベース・API は従来どおり）
 
-export const inputClass = 'w-full rounded border px-3 py-2'
-
-// timestamptz(ISO) ↔ datetime-local(ローカル) 変換（予約投稿の日時入力用）
-export function toLocalInput(iso: string | null | undefined): string {
-  if (!iso) return ''
-  const d = new Date(iso)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
-    d.getHours(),
-  )}:${pad(d.getMinutes())}`
-}
-
-export function fromLocalInput(local: string): string | null {
-  if (!local) return null
-  return new Date(local).toISOString()
-}
+// 素の input/select/textarea に付与して shadcn 風の見た目に揃えるクラス
+export const inputClass =
+  'w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50'
 
 export function Field({
   label,
@@ -31,11 +21,13 @@ export function Field({
   children: ReactNode
 }) {
   return (
-    <div>
-      <label className="mb-1 block text-sm text-gray-600">
+    <div className="space-y-1.5">
+      <Label>
         {label}
-        {hint && <span className="ml-1 text-gray-400">{hint}</span>}
-      </label>
+        {hint && (
+          <span className="ml-1 font-normal text-muted-foreground">{hint}</span>
+        )}
+      </Label>
       {children}
     </div>
   )
@@ -51,13 +43,8 @@ export function CheckboxField({
   children: ReactNode
 }) {
   return (
-    <label className="flex items-center gap-2">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="h-5 w-5"
-      />
+    <label className="flex items-center gap-2 text-sm">
+      <Switch checked={checked} onCheckedChange={onChange} />
       <span>{children}</span>
     </label>
   )
@@ -69,7 +56,6 @@ export function useSaveState() {
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // navigateAway=true の場合、成功後は呼び出し側が遷移する想定で saving を維持
   async function run(fn: () => Promise<void>, navigateAway = false) {
     setSaving(true)
     setError(null)
@@ -110,23 +96,34 @@ export function SaveBar({
 }) {
   return (
     <div className="space-y-2">
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
       {done && <p className="text-sm text-green-700">保存しました。</p>}
       <div className="flex flex-wrap gap-2">
-        <button
-          onClick={onSave}
-          disabled={saving || !canSave}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-        >
+        <Button onClick={onSave} disabled={saving || !canSave}>
           {saving ? '保存中…' : editing ? '更新する' : '作成する'}
-        </button>
+        </Button>
         {cancelHref && (
-          <Link href={cancelHref} className="rounded border px-4 py-2">
-            キャンセル
-          </Link>
+          <Button variant="outline" asChild>
+            <Link href={cancelHref}>キャンセル</Link>
+          </Button>
         )}
         {extra}
       </div>
     </div>
   )
+}
+
+// timestamptz(ISO) ↔ datetime-local(ローカル) 変換（予約投稿の日時入力用）
+export function toLocalInput(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours(),
+  )}:${pad(d.getMinutes())}`
+}
+
+export function fromLocalInput(local: string): string | null {
+  if (!local) return null
+  return new Date(local).toISOString()
 }

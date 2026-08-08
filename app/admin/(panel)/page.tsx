@@ -1,6 +1,13 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/admin'
 import { ADMIN_NAV } from '@/lib/admin-nav'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,58 +15,59 @@ export default async function AdminHome() {
   await requireAdmin()
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
-      <h1 className="mb-4 text-xl font-bold">ダッシュボード</h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-lg font-bold">ダッシュボード</h1>
+        <p className="text-sm text-muted-foreground">
+          よく使う操作から始められます。
+        </p>
+      </div>
 
       {/* よく使う操作 */}
-      <section className="mb-6">
-        <h2 className="mb-2 text-sm font-bold text-gray-500">よく使う操作</h2>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/admin/games/new"
-            className="rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground"
-          >
-            ＋ 新しい大会
-          </Link>
-          <Link
-            href="/admin/news/new"
-            className="rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground"
-          >
-            ＋ 新しいおしらせ
-          </Link>
-          <Link
-            href="/admin/resources/new"
-            className="rounded-lg border border-primary px-4 py-3 font-medium text-primary"
-          >
-            ＋ 新しい資料
-          </Link>
+      <section>
+        <h2 className="mb-2 text-xs font-bold tracking-wide text-muted-foreground">
+          よく使う操作
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild>
+            <Link href="/admin/games/new">＋ 新しい大会</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/news/new">＋ 新しいおしらせ</Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/admin/resources/new">＋ 新しい資料</Link>
+          </Button>
         </div>
       </section>
 
-      {/* 各機能への入口（サイドバーと同じグルーピング） */}
+      {/* 各機能への入口 */}
       {ADMIN_NAV.map((g) => (
-        <section key={g.title} className="mb-5">
-          <h2 className="mb-2 text-sm font-bold text-gray-500">{g.title}</h2>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <section key={g.title}>
+          <h2 className="mb-2 text-xs font-bold tracking-wide text-muted-foreground">
+            {g.title}
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {g.items.map((it) => (
-              <Link
-                key={it.href}
-                href={it.href}
-                className="rounded-lg border bg-white px-4 py-3 font-medium hover:bg-gray-50"
-              >
-                {it.label}
+              <Link key={it.href} href={it.href} className="group block">
+                <Card className="transition-colors group-hover:border-primary/40 group-hover:bg-accent/40">
+                  <CardHeader>
+                    <CardTitle className="text-base">{it.label}</CardTitle>
+                    <CardDescription>{it.href}</CardDescription>
+                  </CardHeader>
+                </Card>
               </Link>
             ))}
           </div>
         </section>
       ))}
 
-      <p className="mt-6 text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         公開サイトを見る：{' '}
         <Link href="/" className="text-primary hover:underline">
           トップページ →
         </Link>
       </p>
-    </main>
+    </div>
   )
 }

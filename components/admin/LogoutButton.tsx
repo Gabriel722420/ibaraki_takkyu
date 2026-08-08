@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
 
 export function LogoutButton() {
   const router = useRouter()
@@ -20,12 +21,8 @@ export function LogoutButton() {
   }
 
   return (
-    <button
-      onClick={logout}
-      disabled={busy}
-      className="rounded border border-white/50 bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20 disabled:opacity-50"
-    >
+    <Button variant="outline" size="sm" onClick={logout} disabled={busy}>
       {busy ? 'ログアウト中…' : 'ログアウト'}
-    </button>
+    </Button>
   )
 }
