@@ -2,12 +2,20 @@ import { createClient } from './supabase/server'
 import { DOC_ORDER } from './docs'
 import type {
   Announcement,
+  Category,
   Division,
   Game,
   GameDocument,
   Officer,
   Resource,
 } from './types'
+
+export type Paged<T> = {
+  items: T[]
+  total: number
+  page: number
+  perPage: number
+}
 
 // 予約投稿の公開ゲート：publish_at 未設定 or 到来済みのみ公開。
 // 使い方: query.or(scheduledOr())（is_published=true とAND結合される）
@@ -119,19 +127,56 @@ export async function getResourcesByCategory(
   return (data ?? []) as Resource[]
 }
 
-// ── お知らせ（公開側） ──
-// 一覧：公開のみ・固定を上部・公開日降順
-export async function listAnnouncements(): Promise<Announcement[]> {
+// ── カテゴリ（お知らせ分類・公開/管理共通） ──
+export async function listCategories(): Promise<Category[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('announcements')
+    .from('categories')
     .select('*')
+    .order('sort_order', { ascending: true })
+    .order('name', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as Category[]
+}
+
+export async function getCategoryAdmin(id: string): Promise<Category | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('id', id)
+    .single()
+  return (data ?? null) as Category | null
+}
+
+// ── お知らせ（公開側・ページング＋カテゴリ絞り込み） ──
+// 公開のみ・固定を上部・公開日降順。categoryIds 指定時は当該＋子孫で絞る（呼び出し側で展開）。
+export async function listAnnouncements(
+  opts: { categoryIds?: string[]; page?: number; perPage?: number } = {},
+): Promise<Paged<Announcement>> {
+  const supabase = await createClient()
+  const perPage = opts.perPage ?? 30
+  const page = Math.max(1, opts.page ?? 1)
+  const from = (page - 1) * perPage
+  let q = supabase
+    .from('announcements')
+    .select('*, category:categories(*)', { count: 'exact' })
     .eq('is_published', true)
     .or(scheduledOr())
+  if (opts.categoryIds && opts.categoryIds.length > 0)
+    q = q.in('category_id', opts.categoryIds)
+  q = q
     .order('is_pinned', { ascending: false })
     .order('published_at', { ascending: false })
+    .range(from, from + perPage - 1)
+  const { data, count, error } = await q
   if (error) throw error
-  return (data ?? []) as Announcement[]
+  return {
+    items: (data ?? []) as unknown as Announcement[],
+    total: count ?? 0,
+    page,
+    perPage,
+  }
 }
 
 // 詳細：公開のみ
@@ -139,24 +184,35 @@ export async function getAnnouncement(id: string): Promise<Announcement | null> 
   const supabase = await createClient()
   const { data } = await supabase
     .from('announcements')
-    .select('*')
+    .select('*, category:categories(*)')
     .eq('id', id)
     .eq('is_published', true)
     .or(scheduledOr())
     .single()
-  return (data ?? null) as Announcement | null
+  return (data ?? null) as unknown as Announcement | null
 }
 
-// ── お知らせ（管理側・is_published で絞らない） ──
-export async function listAnnouncementsAdmin(): Promise<Announcement[]> {
+// ── お知らせ（管理側・is_published で絞らない・ページング） ──
+export async function listAnnouncementsAdmin(
+  opts: { page?: number; perPage?: number } = {},
+): Promise<Paged<Announcement>> {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  const perPage = opts.perPage ?? 30
+  const page = Math.max(1, opts.page ?? 1)
+  const from = (page - 1) * perPage
+  const { data, count, error } = await supabase
     .from('announcements')
-    .select('*')
+    .select('*, category:categories(*)', { count: 'exact' })
     .order('is_pinned', { ascending: false })
     .order('published_at', { ascending: false })
+    .range(from, from + perPage - 1)
   if (error) throw error
-  return (data ?? []) as Announcement[]
+  return {
+    items: (data ?? []) as unknown as Announcement[],
+    total: count ?? 0,
+    page,
+    perPage,
+  }
 }
 
 export async function getAnnouncementAdmin(

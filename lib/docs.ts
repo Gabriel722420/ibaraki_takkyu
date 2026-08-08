@@ -1,4 +1,27 @@
-import type { DocType } from './types'
+import type { Category, DocType } from './types'
+
+// カテゴリの自身＋全子孫のIDを集める（純粋関数・親カテゴリ選択時に子記事も含めるため）
+export function collectCategoryIds(
+  categories: Category[],
+  rootId: string,
+): string[] {
+  const children = new Map<string, string[]>()
+  for (const c of categories) {
+    if (c.parent_id) {
+      const arr = children.get(c.parent_id) ?? []
+      arr.push(c.id)
+      children.set(c.parent_id, arr)
+    }
+  }
+  const out: string[] = []
+  const stack = [rootId]
+  while (stack.length) {
+    const id = stack.pop()!
+    out.push(id)
+    for (const ch of children.get(id) ?? []) stack.push(ch)
+  }
+  return out
+}
 
 // 要項→組合せ→結果→連絡 の固定表示順
 export const DOC_ORDER: DocType[] = ['要項', '組合せ', '結果', '連絡']

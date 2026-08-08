@@ -34,6 +34,17 @@ export default async function AdminHome() {
         </li>
         <li>
           <Link
+            href="/admin/categories"
+            className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
+          >
+            おしらせカテゴリの管理
+            <span className="mt-1 block text-sm font-normal text-gray-600">
+              分類（親子）の追加・改名・並べ替え・削除
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/admin/resources"
             className="block rounded-lg border px-4 py-4 text-lg font-medium active:bg-gray-50"
           >

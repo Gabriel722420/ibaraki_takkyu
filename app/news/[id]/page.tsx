@@ -23,6 +23,11 @@ export default async function NewsDetail({
             重要
           </span>
         )}
+        {a.category?.name && (
+          <span className="rounded bg-gray-100 px-2 py-0.5">
+            {a.category.name}
+          </span>
+        )}
         <span>{formatDate(a.published_at)}</span>
       </div>
       <h1 className="mb-4 text-2xl leading-snug font-bold">{a.title}</h1>

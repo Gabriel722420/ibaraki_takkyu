@@ -16,7 +16,7 @@ import {
   toLocalInput,
   fromLocalInput,
 } from '@/components/admin/FormKit'
-import type { Announcement } from '@/lib/types'
+import type { Announcement, Category } from '@/lib/types'
 
 // SSR事故回避のため動的import(ssr:false)でエディタを読み込む
 const RichTextEditor = dynamic(
@@ -31,18 +31,44 @@ const RichTextEditor = dynamic(
   },
 )
 
+// トップ→子の順に並べ、子は接頭辞付きで表示
+function orderedCategoryOptions(
+  categories: Category[],
+): { id: string; label: string }[] {
+  const tops = categories.filter((c) => !c.parent_id)
+  const out: { id: string; label: string }[] = []
+  for (const t of tops) {
+    out.push({ id: t.id, label: t.name })
+    for (const c of categories.filter((x) => x.parent_id === t.id)) {
+      out.push({ id: c.id, label: `　└ ${c.name}` })
+    }
+  }
+  // 親が見つからない孤児も末尾に
+  for (const c of categories) {
+    if (c.parent_id && !categories.some((p) => p.id === c.parent_id)) {
+      out.push({ id: c.id, label: c.name })
+    }
+  }
+  return out
+}
+
 export function NewsForm({
   announcement,
   today,
+  categories,
 }: {
   announcement?: Announcement
   today: string
+  categories: Category[]
 }) {
   const router = useRouter()
   const editing = !!announcement
   const { saving, error, run } = useSaveState()
 
   const [title, setTitle] = useState(announcement?.title ?? '')
+  const [categoryId, setCategoryId] = useState(
+    announcement?.category_id ?? '',
+  )
   const [body, setBody] = useState(announcement?.body ?? '')
   const [publishedAt, setPublishedAt] = useState(
     (announcement?.published_at ?? today).slice(0, 10),
@@ -65,6 +91,7 @@ export function NewsForm({
       is_published: isPublished,
       is_pinned: isPinned,
       publish_at: fromLocalInput(publishAt),
+      category_id: categoryId || null,
     }
     run(async () => {
       if (editing) {
@@ -85,6 +112,21 @@ export function NewsForm({
           onChange={(e) => setTitle(e.target.value)}
           className={inputClass}
         />
+      </Field>
+
+      <Field label="カテゴリー">
+        <select
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className={inputClass}
+        >
+          <option value="">（未分類）</option>
+          {orderedCategoryOptions(categories).map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </Field>
 
       <Field label="本文" hint="太字・色・見出し・箇条書き・リンク・画像が使えます">
