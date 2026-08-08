@@ -27,6 +27,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { ADMIN_NAV } from '@/lib/admin-nav'
 import { AdminBreadcrumb } from '@/components/admin/AdminBreadcrumb'
 import { LogoutButton } from '@/components/admin/LogoutButton'
@@ -59,6 +60,7 @@ export function AdminShell({
   const pathname = usePathname()
 
   return (
+    <TooltipProvider delayDuration={0}>
     <SidebarProvider className="admin-shell">
       <Sidebar>
         <SidebarHeader className="border-sidebar-border border-b">
@@ -131,5 +133,6 @@ export function AdminShell({
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </TooltipProvider>
   )
 }
