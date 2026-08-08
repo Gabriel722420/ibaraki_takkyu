@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/admin'
+import { LogoutButton } from '@/components/admin/LogoutButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,7 +9,10 @@ export default async function AdminHome() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6">
-      <h1 className="mb-4 text-xl font-bold">管理トップ</h1>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h1 className="text-xl font-bold">管理トップ</h1>
+        <LogoutButton />
+      </div>
       <ul className="space-y-3">
         <li>
           <Link
