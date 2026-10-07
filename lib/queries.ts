@@ -224,6 +224,47 @@ export async function getAnnouncement(id: string): Promise<Announcement | null> 
   return (data ?? null) as unknown as Announcement | null
 }
 
+// 関連おしらせ（同カテゴリの最近記事・現記事を除く）。詳細ページの回遊導線用。
+// カテゴリ未設定/同カテゴリが少数の場合は最新のおしらせで補完する。
+export async function listRelatedAnnouncements(
+  current: Pick<Announcement, 'id' | 'category_id'>,
+  limit = 5,
+): Promise<Announcement[]> {
+  const supabase = await createClient()
+  const base = () =>
+    supabase
+      .from('announcements')
+      .select('*, category:categories(*)')
+      .eq('is_published', true)
+      .or(scheduledOr())
+      .neq('id', current.id)
+      .order('published_at', { ascending: false })
+
+  const results: Announcement[] = []
+  const seen = new Set<string>([current.id])
+  const take = (rows: Announcement[]) => {
+    for (const a of rows) {
+      if (results.length >= limit) break
+      if (!seen.has(a.id)) {
+        results.push(a)
+        seen.add(a.id)
+      }
+    }
+  }
+
+  if (current.category_id) {
+    const { data } = await base()
+      .eq('category_id', current.category_id)
+      .limit(limit)
+    take((data ?? []) as unknown as Announcement[])
+  }
+  if (results.length < limit) {
+    const { data } = await base().limit(limit * 2)
+    take((data ?? []) as unknown as Announcement[])
+  }
+  return results
+}
+
 // ── お知らせ（管理側・is_published で絞らない・ページング） ──
 export async function listAnnouncementsAdmin(
   opts: { page?: number; perPage?: number } = {},

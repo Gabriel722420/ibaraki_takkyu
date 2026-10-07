@@ -89,6 +89,116 @@ body {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* ── 本文中の資料リンク（PDF/Word/Excel等）を大きなDLボタン化（公開のみ=.site スコープ） ──
+   WP移行記事は本文が薄く添付PDFが主体。href 拡張子で検出しボタン化（href は書き換えない）。
+   タップ領域 ≥44px・#0049a2 のファイルアイコン＋右端にDL矢印。admin エディタ(.site 外)は不変。 */
+.site
+  .richtext
+  a:is(
+    [href$='.pdf'],
+    [href$='.doc'],
+    [href$='.docx'],
+    [href$='.xls'],
+    [href$='.xlsx'],
+    [href$='.ppt'],
+    [href$='.pptx'],
+    [href$='.zip']
+  ) {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: 0.75rem;
+  background: var(--color-card);
+  color: var(--color-ink);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    color 0.15s;
+}
+.site
+  .richtext
+  a:is(
+    [href$='.pdf'],
+    [href$='.doc'],
+    [href$='.docx'],
+    [href$='.xls'],
+    [href$='.xlsx'],
+    [href$='.ppt'],
+    [href$='.pptx'],
+    [href$='.zip']
+  )::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--color-primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7,2h7l5,5v13a2,2,0,0,1,-2,2H7a2,2,0,0,1,-2,-2V4a2,2,0,0,1,2,-2z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7,2h7l5,5v13a2,2,0,0,1,-2,2H7a2,2,0,0,1,-2,-2V4a2,2,0,0,1,2,-2z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+.site
+  .richtext
+  a:is(
+    [href$='.pdf'],
+    [href$='.doc'],
+    [href$='.docx'],
+    [href$='.xls'],
+    [href$='.xlsx'],
+    [href$='.ppt'],
+    [href$='.pptx'],
+    [href$='.zip']
+  )::after {
+  content: '';
+  flex: 0 0 auto;
+  margin-left: auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  background-color: var(--color-ink-faint);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11,3h2v7h3l-4,5-4-5h3zM5,19h14v2H5z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11,3h2v7h3l-4,5-4-5h3zM5,19h14v2H5z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  transition: background-color 0.15s;
+}
+.site
+  .richtext
+  a:is(
+    [href$='.pdf'],
+    [href$='.doc'],
+    [href$='.docx'],
+    [href$='.xls'],
+    [href$='.xlsx'],
+    [href$='.ppt'],
+    [href$='.pptx'],
+    [href$='.zip']
+  ):hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  background: #f2f6fd;
+  color: var(--color-primary);
+}
+.site
+  .richtext
+  a:is(
+    [href$='.pdf'],
+    [href$='.doc'],
+    [href$='.docx'],
+    [href$='.xls'],
+    [href$='.xlsx'],
+    [href$='.ppt'],
+    [href$='.pptx'],
+    [href$='.zip']
+  ):hover::after {
+  background-color: var(--color-primary);
+}
 .richtext strong,
 .richtext b {
   font-weight: 700;

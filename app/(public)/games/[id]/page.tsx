@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { FileText } from 'lucide-react'
+import { CalendarDays, Download, FileText } from 'lucide-react'
 import { getGame } from '@/lib/queries'
 import { resolveDocUrl, toContentHtml, DOC_ORDER } from '@/lib/docs'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -25,7 +25,8 @@ export default async function GameDetail({
               {game.division.name}
             </span>
           )}
-          <span>
+          <span className="inline-flex items-center gap-1">
+            <CalendarDays className="size-4 text-ink-faint" aria-hidden />
             {game.event_date ? formatDate(game.event_date) : '日程調整中'}
           </span>
         </div>
@@ -50,6 +51,8 @@ export default async function GameDetail({
           return (
             <section key={type} className="mt-6 border-t border-hairline pt-6">
               <h2 className="mb-3 text-lg font-semibold">{type}</h2>
+              {/* 資料は大きなDLボタン（タップ44px+・#0049a2・ファイル名＋DL矢印）。
+                  PDF到達が核心のため押しやすさを最優先。 */}
               <ul className="space-y-2">
                 {group.map((doc) => {
                   const url = resolveDocUrl(doc)
@@ -60,15 +63,19 @@ export default async function GameDetail({
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-lg border border-hairline bg-card px-4 py-3 font-medium text-ink transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
+                        className="group flex min-h-[3.25rem] items-center gap-3 rounded-xl border border-hairline bg-card px-4 py-3 font-semibold text-ink transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] active:bg-primary/5"
                       >
                         <FileText
-                          className="size-5 shrink-0 text-primary"
+                          className="size-6 shrink-0 text-primary"
                           aria-hidden
                         />
-                        <span className="group-hover:text-primary">
+                        <span className="min-w-0 flex-1 group-hover:text-primary">
                           {doc.title}
                         </span>
+                        <Download
+                          className="size-[1.15rem] shrink-0 text-ink-faint transition-colors group-hover:text-primary"
+                          aria-hidden
+                        />
                       </a>
                     </li>
                   )
