@@ -56,6 +56,7 @@ export type Category = {
 
 export type Announcement = {
   id: string
+  wp_post_id: number | null // WP移行記事の連番（公開URL /news/[wp_post_id] の正規キー）
   title: string
   body: string | null
   published_at: string

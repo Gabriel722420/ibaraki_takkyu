@@ -91,7 +91,7 @@ export default async function NewsPage({
         {items.map((a) => (
           <li key={a.id}>
             <Link
-              href={`/news/${a.id}`}
+              href={`/news/${a.wp_post_id ?? a.id}`}
               className="group flex h-full flex-col gap-1.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
             >
               <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">

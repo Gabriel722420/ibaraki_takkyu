@@ -212,12 +212,14 @@ export async function listAnnouncements(
 }
 
 // 詳細：公開のみ
+// id は wp_post_id（数字のみ＝正規の短縮URL）または UUID（旧URL・新規投稿）を受け付ける。
 export async function getAnnouncement(id: string): Promise<Announcement | null> {
   const supabase = await createClient()
+  const byWpId = /^\d+$/.test(id)
   const { data } = await supabase
     .from('announcements')
     .select('*, category:categories(*)')
-    .eq('id', id)
+    .eq(byWpId ? 'wp_post_id' : 'id', byWpId ? Number(id) : id)
     .eq('is_published', true)
     .or(scheduledOr())
     .single()

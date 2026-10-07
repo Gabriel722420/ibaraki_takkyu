@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { CalendarDays, ChevronRight } from 'lucide-react'
 import { getAnnouncement, listRelatedAnnouncements } from '@/lib/queries'
 import { toContentHtml } from '@/lib/docs'
@@ -15,6 +15,11 @@ export default async function NewsDetail({
   const { id } = await params
   const a = await getAnnouncement(id)
   if (!a) notFound()
+  // 正規URLは /news/[wp_post_id]。旧UUIDでのアクセスは短縮URLへ 308 恒久リダイレクト
+  // （共有済み・検索インデックス保護）。wp_post_id を持たない新規投稿は UUID のまま。
+  if (!/^\d+$/.test(id) && a.wp_post_id != null) {
+    permanentRedirect(`/news/${a.wp_post_id}`)
+  }
   const related = await listRelatedAnnouncements(a, 5)
 
   return (
@@ -60,7 +65,7 @@ export default async function NewsDetail({
             {related.map((r) => (
               <li key={r.id} className="border-b border-hairline last:border-b-0">
                 <Link
-                  href={`/news/${r.id}`}
+                  href={`/news/${r.wp_post_id ?? r.id}`}
                   className="group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-primary/5"
                 >
                   <span className="min-w-0 flex-1">

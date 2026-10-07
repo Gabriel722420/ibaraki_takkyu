@@ -252,7 +252,7 @@ function GameRow({ game: g, today }: { game: Game; today: string }) {
 function NewsCard({ a }: { a: Announcement }) {
   return (
     <Link
-      href={`/news/${a.id}`}
+      href={`/news/${a.wp_post_id ?? a.id}`}
       className="group flex h-full flex-col gap-1.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]"
     >
       <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
