@@ -315,14 +315,18 @@ function EntryCard({
   return (
     <Link
       href={href}
-      className="group relative flex flex-col gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] md:p-5"
+      /* 入口カードはヒーローに重なる（-mt-16）。hover 背景は必ず不透明にする：
+         bg-primary/[0.03] のような半透明だとカードが透けてヒーローの青が上半分に出る破綻になる。 */
+      className="group relative flex flex-col gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] md:p-5"
     >
       {/* 右上に方向キュー（絶対配置でラベル折返しに干渉しない）。hoverで色＋ニュッジ */}
       <ChevronRight
         className="absolute top-4 right-4 size-5 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary md:top-5 md:right-5"
         aria-hidden
       />
-      <span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+      {/* アイコンタイルは固定サイズ＆自己配置で確定（flex-col の stretch で横に伸びないよう
+          inline-grid + self-start + shrink-0 + 明示 w/h。hover 色はこの小タイルだけに限定） */}
+      <span className="inline-grid h-12 w-12 shrink-0 place-items-center self-start rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
         {icon}
       </span>
       {/* ラベルは全幅で1行に収まるサイズ（UD: モバイルでも約18px確保）。7文字の

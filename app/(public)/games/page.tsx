@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { CalendarDays, ChevronRight } from 'lucide-react'
 import { listGamesForYearList } from '@/lib/queries'
 import { gameStatus, GAME_STATUS_LABEL, type GameStatus } from '@/lib/docs'
 import type { Game } from '@/lib/types'
@@ -31,7 +32,8 @@ export default async function GamesPage() {
           <h2 className="mb-3 text-[1.3rem] font-semibold tracking-[-0.01em]">
             {grp.year}年度
           </h2>
-          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {/* 1行1大会の全幅リスト（件数が少なくてもスカスカにならず、多くても整然） */}
+          <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
             {grp.items.map((g) => {
               const status = gameStatus({
                 eventDate: g.event_date,
@@ -39,33 +41,41 @@ export default async function GamesPage() {
                 today,
               })
               return (
-                <li key={g.id}>
+                <li
+                  key={g.id}
+                  className="border-b border-hairline last:border-b-0"
+                >
                   <Link
                     href={`/games/${g.id}`}
-                    className="group flex h-full items-center gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
+                    className="group flex flex-col gap-1.5 px-4 py-4 transition-colors hover:bg-primary/5 sm:flex-row sm:items-center sm:gap-4 md:px-5"
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
-                        <StatusBadge status={status} />
-                        {g.division?.name && (
-                          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
-                            {g.division.name}
-                          </span>
-                        )}
-                        <span>
-                          {g.event_date
-                            ? formatDate(g.event_date)
-                            : '日程調整中'}
-                        </span>
-                      </div>
-                      <span className="mt-1 block text-lg leading-snug font-medium text-ink group-hover:text-primary">
-                        {g.title}
+                    <span className="flex shrink-0 flex-wrap items-center gap-2 sm:w-60">
+                      <StatusBadge status={status} />
+                      <span className="inline-flex items-center gap-1 text-sm font-medium text-ink-muted">
+                        <CalendarDays
+                          className="size-4 shrink-0 text-ink-faint"
+                          aria-hidden
+                        />
+                        {g.event_date ? formatDate(g.event_date) : '日程調整中'}
                       </span>
-                    </div>
-                    {status === 'published' && (
-                      <span className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">
+                    </span>
+                    <span className="min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary">
+                      {g.division?.name && (
+                        <span className="mr-2 rounded-full bg-primary/10 px-2.5 py-0.5 align-middle text-sm font-medium text-primary">
+                          {g.division.name}
+                        </span>
+                      )}
+                      {g.title}
+                    </span>
+                    {status === 'published' ? (
+                      <span className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">
                         結果
                       </span>
+                    ) : (
+                      <ChevronRight
+                        className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:block"
+                        aria-hidden
+                      />
                     )}
                   </Link>
                 </li>

@@ -24,9 +24,12 @@ export default async function RegistrationPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
-      <h1 className="mb-6 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
+      <h1 className="mb-3 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
         登録・資格情報
       </h1>
+      <p className="mb-8 max-w-prose leading-relaxed text-ink-muted">
+        選手登録や各種大会の申込に必要な様式・資料をご案内します。
+      </p>
 
       {groups.map((g) => (
         <section key={g.category} className="mb-10">
