@@ -1,6 +1,8 @@
 // サーバー専用：本文HTMLを表示前にサニタイズ（XSS対策）。
-// 装飾に必要な範囲だけタグ/属性を許可。公開側の詳細ページから使用する。
-import DOMPurify from 'isomorphic-dompurify'
+// jsdom 非依存の sanitize-html を使用（isomorphic-dompurify の jsdom 依存が
+// Vercel serverless で ERR_REQUIRE_ESM（@exodus/bytes の ESM化）を起こし
+// 詳細ページ全滅になったため置換。htmlparser2 ベースで serverless 安全）。
+import sanitizeHtmlLib from 'sanitize-html'
 
 // 装飾＋WP移行記事の構造を保持できる範囲（script/style/iframe/object/form 等は不許可）
 const ALLOWED_TAGS = [
@@ -17,9 +19,16 @@ const ALLOWED_ATTR = [
 ]
 
 export function sanitizeHtml(html: string): string {
-  return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR,
-    // javascript:/data: 由来の src/href は既定でブロックされる
+  return sanitizeHtmlLib(html, {
+    allowedTags: ALLOWED_TAGS,
+    // 上記属性を全タグで許可（従来の DOMPurify ALLOWED_ATTR と同等）。
+    allowedAttributes: { '*': ALLOWED_ATTR },
+    // href/src のスキームを制限：javascript:/data: 等をブロック（既定踏襲＋tel/mailto）。
+    allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+    allowProtocolRelative: true,
+    // style は属性として許可（WP移行本文のインライン装飾を保持）。allowedStyles は
+    // 未指定＝全プロパティ通過（従来 DOMPurify と同等）。on* ハンドラや許可外タグは除去。
+    // 許可外タグは中身を残して破棄（従来挙動に合わせる）。
+    disallowedTagsMode: 'discard',
   })
 }
