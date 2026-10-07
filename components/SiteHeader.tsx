@@ -16,10 +16,9 @@ export async function SiteHeader() {
       <div className="bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 md:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
-            {/* ロゴ用スペース（支給待ち＝差し替え前提）。白地に #0049a2 のマーク。 */}
-            <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-white text-primary">
-              <BrandMark className="size-7" />
-            </span>
+            {/* ブランドマーク（卓球ラケット＋ボール）。#0049a2 の青帯上では白タイルが
+                最も視認性が高いため反転配置（canonical は #0049a2タイル＋白＝白背景/favicon 用）。 */}
+            <BrandMark tile="#ffffff" symbol="#0049a2" className="size-11 shrink-0 rounded-[10px]" />
             <span className="flex flex-col leading-tight">
               <span className="text-xs text-white/80">一般社団法人</span>
               <span className="text-lg font-semibold tracking-[-0.01em]">
