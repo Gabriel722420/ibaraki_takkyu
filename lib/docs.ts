@@ -1,5 +1,15 @@
 import type { Category, DocType } from './types'
 
+// settings 由来の公式文書テキストを段落配列へ分割（純粋関数）。
+// 作者が改行（単一/連続いずれも）で区切った単位を1段落とし、空要素を除く。
+// 表示側で各段落に字下げ＋段落間マージンを与え、公式文書らしい体裁にする。
+export function splitParagraphs(text: string): string[] {
+  return text
+    .split(/\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+}
+
 // カテゴリの自身＋全子孫のIDを集める（純粋関数・親カテゴリ選択時に子記事も含めるため）
 export function collectCategoryIds(
   categories: Category[],

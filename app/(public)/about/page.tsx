@@ -5,7 +5,7 @@ import {
   getResourcesByCategory,
   getSettings,
 } from '@/lib/queries'
-import { resolveDocUrl } from '@/lib/docs'
+import { resolveDocUrl, splitParagraphs } from '@/lib/docs'
 import type { Officer } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
@@ -45,15 +45,6 @@ function groupOfficers(
     })
 }
 
-// 挨拶本文を段落へ整える：空行区切りで段落化し、段落内の単一改行は詰める（和文＝連結）。
-// 「一文一行」の不要な改行ブツ切れを解消し、読みやすい段落に流し込む。
-function toParagraphs(text: string): string[] {
-  return text
-    .split(/\n\s*\n/)
-    .map((p) => p.replace(/\s*\n\s*/g, '').trim())
-    .filter(Boolean)
-}
-
 export default async function AboutPage() {
   const [about, officers, docs, settings] = await Promise.all([
     getAboutSettings(),
@@ -63,7 +54,7 @@ export default async function AboutPage() {
     getSettings(['policy_contact']),
   ])
   const contact = settings.policy_contact ?? ''
-  const paragraphs = about.greeting ? toParagraphs(about.greeting) : []
+  const paragraphs = about.greeting ? splitParagraphs(about.greeting) : []
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
@@ -85,10 +76,12 @@ export default async function AboutPage() {
               className="mb-3 w-40 max-w-full rounded-lg border border-hairline sm:float-right sm:mb-2 sm:ml-6"
             />
           )}
+          {/* 各段落：全角1字下げ（indent-[1em]）＋段落間マージンで公式文書の体裁に。
+              行間1.7・本文17px は維持。 */}
           {paragraphs.map((p, i) => (
             <p
               key={i}
-              className="mt-4 leading-relaxed text-ink first:mt-0"
+              className="mt-2.5 indent-[1em] leading-[1.7] text-ink first:mt-0"
             >
               {p}
             </p>
