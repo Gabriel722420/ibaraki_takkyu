@@ -14,8 +14,7 @@ import {
   listCategories,
 } from '@/lib/queries'
 import { gameStatus, GAME_STATUS_LABEL, type GameStatus } from '@/lib/docs'
-import { BrandMark } from '@/components/BrandMark'
-import type { Announcement, Category, Game } from '@/lib/types'
+import type { Announcement, Game } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,47 +29,47 @@ export default async function Home() {
   ])
   const topCats = categories.filter((c) => !c.parent_id).slice(0, 8)
 
+  const hasGames = games.length > 0
+
   return (
     <main>
-      {/* 1. ヒーロー（卓球マクロ写真 × #0049a2 オーバーレイ・人物なし / AI生成しない）。
-          画像は後で public/hero-table.jpg を配置。下の <img> のコメントを外す1箇所で有効化。 */}
-      <section className="relative isolate overflow-hidden text-primary-foreground">
-        {/* 背景の基層：画像未配置時は solid #0049a2（差し替え後は画像の下地） */}
-        <div aria-hidden className="absolute inset-0 -z-20 bg-primary" />
-        {/* ▼ 画像差し替えはここ1箇所：コメントを外すと卓球台マクロ写真が敷かれる
+      {/* 1. ヒーロー：実写の卓球台・ネット（人物なし / AI生成しない）を #0049a2 の
+          ブランドウォッシュで敷く。左は濃く＝白文字を保護、右は薄め＝写真を見せる。
+          出典: Pexels(Julia Dibrova) / Pexels License・public/hero-table.jpg にセルフホスト。
+          ロゴ/写真差し替えは <img> 1箇所。画像が落ちても下の bg-primary で青地を担保。 */}
+      <section className="relative isolate overflow-hidden text-white">
+        <div aria-hidden className="absolute inset-0 -z-30 bg-primary" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/hero-table.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 -z-20 size-full object-cover"
-        /> */}
-        {/* #0049a2 オーバーレイ（画像上でも文字可読性を担保／無画像時は奥行き） */}
+          className="absolute inset-0 -z-20 size-full object-cover object-[center_32%]"
+        />
+        {/* ブランドウォッシュ（青一色で統一・左→右で濃淡） */}
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/95 via-primary/90 to-accent-strong/90"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/45"
         />
-        {/* 右上を明るく（微グラデ）＋卓球ボールを模した極薄の円を1つだけ */}
+        {/* 下端を締める縦グラデ（入口カードの重なりを馴染ませる） */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_130%_at_100%_0%,rgba(255,255,255,0.16),transparent_55%)]"
+          className="absolute inset-x-0 bottom-0 -z-10 h-28 bg-gradient-to-t from-primary/70 to-transparent"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-24 -right-20 -z-10 size-80 rounded-full border border-white/10 bg-white/[0.05]"
-        />
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-5 px-4 pt-14 pb-28 md:px-6 md:pt-20 md:pb-32 lg:px-8">
-          <div className="flex items-center gap-3">
-            <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-white text-primary">
-              <BrandMark className="size-10" />
+        <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-28 md:px-6 md:pt-24 md:pb-36 lg:px-8">
+          {/* eyebrow：法人格＋「公式サイト」は従（小さく） */}
+          <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-white/85">
+            <span className="font-medium">一般社団法人</span>
+            <span aria-hidden className="h-3 w-px bg-white/40" />
+            <span className="rounded-full border border-white/35 px-2.5 py-0.5 text-xs font-medium tracking-wide">
+              公式サイト
             </span>
-            <span className="text-sm font-medium text-white/85">
-              一般社団法人 茨城県卓球連盟
-            </span>
-          </div>
-          <h1 className="text-[1.9rem] leading-[1.15] font-bold tracking-[-0.02em] sm:text-[2.4rem]">
-            公式サイト
+          </p>
+          {/* 連盟名＝主（最大見出し） */}
+          <h1 className="mt-4 text-[2.1rem] leading-[1.1] font-bold tracking-[-0.02em] sm:text-[2.8rem] md:text-[3.1rem]">
+            茨城県卓球連盟
           </h1>
-          <p className="max-w-prose leading-relaxed text-white/90">
+          <p className="mt-5 max-w-prose leading-relaxed text-white/90">
             大会情報・結果、選手登録、各種資料をご案内します。
           </p>
         </div>
@@ -108,11 +107,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 3. 今後の大会（1行1大会の全幅リスト。少数でもスカスカにしない） */}
-      <section>
-        <div className="mx-auto max-w-6xl px-4 pt-12 pb-6 md:px-6 md:pt-16 md:pb-8 lg:px-8">
-          <SectionHeading href="/games" label="今後の大会" more="大会情報一覧" />
-          {games.length > 0 ? (
+      {/* 3. 今後の大会：データがある時だけ表示（0件なら畳んで空箱を主役化させない） */}
+      {hasGames && (
+        <section>
+          <div className="mx-auto max-w-6xl px-4 pt-16 pb-2 md:px-6 md:pt-20 lg:px-8">
+            <SectionHeading
+              href="/games"
+              label="今後の大会"
+              more="大会情報一覧"
+            />
             <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
               {games.map((g) => (
                 <li
@@ -123,24 +126,26 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-          ) : (
-            <EmptyCard>現在、予定されている大会はありません。</EmptyCard>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* 4. おしらせ（実データの主役）。最新順のカード＋カテゴリ絞り込み導線 */}
       <section>
-        <div className="mx-auto max-w-6xl px-4 pt-8 pb-16 md:px-6 md:pt-10 md:pb-20 lg:px-8">
+        <div
+          className={`mx-auto max-w-6xl px-4 pb-16 md:px-6 md:pb-24 lg:px-8 ${
+            hasGames ? 'pt-12 md:pt-16' : 'pt-16 md:pt-20'
+          }`}
+        >
           <SectionHeading href="/news" label="おしらせ" more="おしらせ一覧" />
 
-          {/* カテゴリ絞り込みへの入口（/news の絞り込みへ繋ぐ） */}
+          {/* カテゴリ導線：Airbnb型の横スクロール1行ストリップ（平板な折返しを避ける） */}
           {topCats.length > 0 && (
             <nav
               aria-label="おしらせのカテゴリ"
-              className="mb-4 flex flex-wrap gap-2"
+              className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              <CatChip href="/news" label="すべて" />
+              <CatChip href="/news" label="すべて" accent />
               {topCats.map((c) => (
                 <CatChip
                   key={c.id}
@@ -264,19 +269,32 @@ function NewsCard({ a }: { a: Announcement }) {
           </span>
         )}
       </span>
-      <span className="line-clamp-2 leading-snug font-medium text-ink group-hover:text-primary">
+      <span className="line-clamp-3 leading-relaxed font-medium text-ink group-hover:text-primary">
         {a.title}
       </span>
     </Link>
   )
 }
 
-// ── カテゴリ絞り込みチップ（pill・mono+accent） ──
-function CatChip({ href, label }: { href: string; label: string }) {
+// ── カテゴリ絞り込みチップ（pill・mono+accent）。accent=入口の「すべて」を強調 ──
+function CatChip({
+  href,
+  label,
+  accent,
+}: {
+  href: string
+  label: string
+  accent?: boolean
+}) {
   return (
     <Link
       href={href}
-      className="inline-flex min-h-[36px] items-center rounded-full border border-surface-muted bg-card px-3.5 text-sm text-ink transition-colors hover:border-primary hover:text-primary"
+      className={[
+        'inline-flex min-h-[38px] shrink-0 items-center rounded-full border px-4 text-sm font-medium transition-colors',
+        accent
+          ? 'border-primary bg-primary text-primary-foreground'
+          : 'border-surface-muted bg-card text-ink hover:border-primary hover:text-primary',
+      ].join(' ')}
     >
       {label}
     </Link>

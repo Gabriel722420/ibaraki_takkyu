@@ -18,7 +18,7 @@ export async function SiteHeader() {
           <Link href="/" className="flex items-center gap-3">
             {/* ロゴ用スペース（支給待ち＝差し替え前提）。白地に #0049a2 のマーク。 */}
             <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-white text-primary">
-              <BrandMark className="size-8" />
+              <BrandMark className="size-7" />
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-xs text-white/80">一般社団法人</span>
