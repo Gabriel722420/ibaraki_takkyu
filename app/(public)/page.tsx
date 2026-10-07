@@ -56,20 +56,16 @@ export default async function Home() {
           aria-hidden
           className="absolute inset-x-0 bottom-0 -z-10 h-28 bg-gradient-to-t from-primary/70 to-transparent"
         />
-        <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-28 md:px-6 md:pt-24 md:pb-36 lg:px-8">
-          {/* eyebrow：法人格＋「公式サイト」は従（小さく） */}
-          <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-white/85">
-            <span className="font-medium">一般社団法人</span>
-            <span aria-hidden className="h-3 w-px bg-white/40" />
-            <span className="rounded-full border border-white/35 px-2.5 py-0.5 text-xs font-medium tracking-wide">
-              公式サイト
-            </span>
-          </p>
-          {/* 連盟名＝主（最大見出し） */}
-          <h1 className="mt-4 text-[2.1rem] leading-[1.1] font-bold tracking-[-0.02em] sm:text-[2.8rem] md:text-[3.1rem]">
-            茨城県卓球連盟
+        <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-28 md:px-6 md:pt-16 md:pb-36 lg:px-8">
+          {/* 連盟名はヘッダーが担う。ヒーローは写真＋ウォッシュを主役に、
+              重複を避けて「用途を示す簡潔な見出し＋リード」のみ置く（連盟名は反復しない）。 */}
+          <span className="inline-flex items-center rounded-full border border-white/35 px-3 py-0.5 text-xs font-medium tracking-wide text-white/90">
+            公式サイト
+          </span>
+          <h1 className="mt-4 max-w-[20ch] text-[1.75rem] leading-[1.15] font-bold tracking-[-0.02em] sm:text-[2.3rem] md:text-[2.6rem]">
+            大会・登録・各種資料のご案内
           </h1>
-          <p className="mt-5 max-w-prose leading-relaxed text-white/90">
+          <p className="mt-4 max-w-prose leading-relaxed text-white/90">
             大会情報・結果、選手登録、各種資料をご案内します。
           </p>
         </div>
