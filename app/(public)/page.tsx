@@ -44,26 +44,29 @@ export default async function Home() {
           src="/hero-table.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 -z-20 size-full object-cover object-[center_32%]"
+          className="absolute inset-0 -z-20 size-full object-cover object-[70%_30%]"
         />
-        {/* ブランドウォッシュ（青一色で統一・左→右で濃淡） */}
+        {/* ブランドウォッシュ：左は濃く＝白文字を保護、右は薄め＝実写(ネット/台)を活かす。
+            モバイルはやや濃いめ、md以上で右を大きく開けて写真を主役化。青一色で統一。 */}
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/45"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/95 via-primary/80 to-primary/45 md:from-primary/94 md:via-primary/60 md:to-primary/15"
         />
-        {/* 下端を締める縦グラデ（入口カードの重なりを馴染ませる） */}
+        {/* 下端スクリム：入口カードの重なりを馴染ませる */}
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 -z-10 h-28 bg-gradient-to-t from-primary/70 to-transparent"
+          className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-primary/85 to-transparent"
         />
-        <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-28 md:px-6 md:pt-16 md:pb-36 lg:px-8">
+        <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-24 md:px-6 md:pt-20 md:pb-28 lg:px-8">
           {/* 連盟名はヘッダーが担う。ヒーローは写真＋ウォッシュを主役に、
-              重複を避けて「用途を示す簡潔な見出し＋リード」のみ置く（連盟名は反復しない）。 */}
-          <span className="inline-flex items-center rounded-full border border-white/35 px-3 py-0.5 text-xs font-medium tracking-wide text-white/90">
+              重複を避けて「用途を示す簡潔な見出し＋リード」のみ置く（連盟名は反復しない）。
+              改行は inline-block の2分割で制御し、1文字だけ落ちる不格好な折返しを防ぐ。 */}
+          <span className="inline-flex items-center rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white backdrop-blur-sm">
             公式サイト
           </span>
-          <h1 className="mt-4 max-w-[20ch] text-[1.75rem] leading-[1.15] font-bold tracking-[-0.02em] sm:text-[2.3rem] md:text-[2.6rem]">
-            大会・登録・各種資料のご案内
+          <h1 className="mt-5 text-[1.45rem] leading-[1.18] font-bold tracking-[-0.02em] sm:text-[2rem] md:text-[2.3rem]">
+            <span className="inline-block whitespace-nowrap">大会・登録・各種資料</span>
+            <span className="inline-block whitespace-nowrap">のご案内</span>
           </h1>
           <p className="mt-4 max-w-prose leading-relaxed text-white/90">
             大会情報・結果、選手登録、各種資料をご案内します。
@@ -72,9 +75,9 @@ export default async function Home() {
       </section>
 
       {/* 2. 各種情報への入口（主役）。ヒーロー下端に重ねて浮かせる */}
-      <section className="relative z-10 -mt-14">
+      <section className="relative z-10 -mt-16">
         <div className="mx-auto max-w-6xl px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
             <EntryCard
               href="/games"
               icon={<Trophy className="size-7" aria-hidden />}
@@ -129,8 +132,8 @@ export default async function Home() {
       {/* 4. おしらせ（実データの主役）。最新順のカード＋カテゴリ絞り込み導線 */}
       <section>
         <div
-          className={`mx-auto max-w-6xl px-4 pb-16 md:px-6 md:pb-24 lg:px-8 ${
-            hasGames ? 'pt-12 md:pt-16' : 'pt-16 md:pt-20'
+          className={`mx-auto max-w-6xl px-4 pb-10 md:px-6 md:pb-14 lg:px-8 ${
+            hasGames ? 'pt-14 md:pt-20' : 'pt-16 md:pt-24'
           }`}
         >
           <SectionHeading href="/news" label="おしらせ" more="おしらせ一覧" />
@@ -312,17 +315,20 @@ function EntryCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] md:p-5"
+      className="group relative flex flex-col gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] md:p-5"
     >
+      {/* 右上に方向キュー（絶対配置でラベル折返しに干渉しない）。hoverで色＋ニュッジ */}
+      <ChevronRight
+        className="absolute top-4 right-4 size-5 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary md:top-5 md:right-5"
+        aria-hidden
+      />
       <span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
         {icon}
       </span>
-      <span className="flex items-center gap-1 text-lg font-semibold">
+      {/* ラベルは全幅で1行に収まるサイズ（UD: モバイルでも約18px確保）。7文字の
+          「登録・資格情報」も含め全幅で mid-word 折返しを起こさない。 */}
+      <span className="text-[1.05rem] leading-snug font-semibold md:text-lg">
         {label}
-        <ChevronRight
-          className="size-4 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
-          aria-hidden
-        />
       </span>
       <span className="text-sm leading-snug text-ink-muted">{desc}</span>
     </Link>
