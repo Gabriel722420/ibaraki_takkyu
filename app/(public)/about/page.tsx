@@ -1,3 +1,4 @@
+import { FileText } from 'lucide-react'
 import {
   getAboutSettings,
   listOfficers,
@@ -55,30 +56,32 @@ export default async function AboutPage() {
   const contact = settings.policy_contact ?? ''
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
-      <h1 className="mb-6 border-l-4 border-primary pl-2 text-2xl font-bold">
+    <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <h1 className="mb-6 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
         連盟情報
       </h1>
 
       {/* 会長挨拶（長文＝読みやすい行長 max-w-prose に保つ） */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-xl font-bold">会長挨拶</h2>
+      <section className="mb-6 rounded-xl border border-hairline bg-card p-5 md:p-8">
+        <h2 className="mb-4 text-[1.3rem] font-semibold tracking-[-0.01em]">
+          会長挨拶
+        </h2>
         <div className="max-w-prose">
           {about.image && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={about.image}
               alt="会長"
-              className="mb-4 w-40 max-w-full rounded-lg border sm:float-right sm:ml-4"
+              className="mb-4 w-40 max-w-full rounded-lg border border-hairline sm:float-right sm:ml-5"
             />
           )}
           {about.greeting && (
-            <p className="leading-relaxed whitespace-pre-wrap text-gray-800">
+            <p className="leading-relaxed whitespace-pre-wrap text-ink">
               {about.greeting}
             </p>
           )}
           {about.sign && (
-            <p className="mt-4 text-right font-medium text-gray-800">
+            <p className="mt-4 text-right font-medium text-ink">
               {about.sign}
             </p>
           )}
@@ -87,30 +90,32 @@ export default async function AboutPage() {
       </section>
 
       {/* 役員情報（大分類でグルーピング／1人1行・密度重視） */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-xl font-bold">組織・役員</h2>
+      <section className="mb-6 rounded-xl border border-hairline bg-card p-5 md:p-8">
+        <h2 className="mb-4 text-[1.3rem] font-semibold tracking-[-0.01em]">
+          組織・役員
+        </h2>
         {officers.length === 0 ? (
-          <p className="py-4 text-gray-500">準備中です。</p>
+          <p className="py-4 text-ink-muted">準備中です。</p>
         ) : (
           groupOfficers(officers).map((g) => (
-            <div key={g.label} className="mb-5">
-              <h3 className="mb-2 border-l-2 border-primary pl-2 font-bold text-primary">
+            <div key={g.label} className="mb-5 last:mb-0">
+              <h3 className="mb-2 border-l-[3px] border-primary pl-2.5 font-semibold text-primary">
                 {g.label}
               </h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 md:grid-cols-3 lg:grid-cols-4">
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 md:grid-cols-3 lg:grid-cols-4">
                 {g.items.map((o) => (
                   <li
                     key={o.id}
                     className={`leading-snug ${o.note ? 'col-span-2' : ''}`}
                   >
                     {g.mixed && (
-                      <span className="mr-1 text-sm text-gray-500">
+                      <span className="mr-1 text-sm text-ink-muted">
                         {o.role}
                       </span>
                     )}
                     <span className="font-medium">{o.name}</span>
                     {o.note && (
-                      <span className="ml-1 text-sm text-gray-500">
+                      <span className="ml-1 text-sm text-ink-muted">
                         （{o.note}）
                       </span>
                     )}
@@ -123,8 +128,10 @@ export default async function AboutPage() {
       </section>
 
       {/* 関連書類（規程） */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-xl font-bold">規約・ダウンロード</h2>
+      <section className="mb-6">
+        <h2 className="mb-3 text-[1.3rem] font-semibold tracking-[-0.01em]">
+          規約・ダウンロード
+        </h2>
         <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {docs.map((d) => {
             const url = resolveDocUrl(d)
@@ -135,28 +142,34 @@ export default async function AboutPage() {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block h-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base font-medium transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
+                  className="group flex h-full items-center gap-3 rounded-lg border border-hairline bg-card px-4 py-3 font-medium text-ink transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
                 >
-                  {d.title}
+                  <FileText
+                    className="size-5 shrink-0 text-primary"
+                    aria-hidden
+                  />
+                  <span className="group-hover:text-primary">{d.title}</span>
                 </a>
               </li>
             )
           })}
           {docs.length === 0 && (
-            <li className="py-4 text-gray-500">準備中です。</li>
+            <li className="py-4 text-ink-muted">準備中です。</li>
           )}
         </ul>
       </section>
 
       {/* 連絡先（settings.policy_contact を policy と共通参照。編集は /admin/policy） */}
-      <section>
-        <h2 className="mb-2 text-xl font-bold">お問い合わせ先</h2>
+      <section className="rounded-xl border border-hairline bg-card p-5 md:p-8">
+        <h2 className="mb-3 text-[1.3rem] font-semibold tracking-[-0.01em]">
+          お問い合わせ先
+        </h2>
         {contact ? (
-          <p className="max-w-prose leading-relaxed whitespace-pre-wrap text-gray-800">
+          <p className="max-w-prose leading-relaxed whitespace-pre-wrap text-ink">
             {contact}
           </p>
         ) : (
-          <p className="text-gray-500">準備中です。</p>
+          <p className="text-ink-muted">準備中です。</p>
         )}
       </section>
     </main>

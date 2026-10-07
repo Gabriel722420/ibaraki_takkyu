@@ -40,8 +40,8 @@ export default async function NewsPage({
     slug ? `/news?category=${encodeURIComponent(slug)}` : '/news'
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
-      <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
+    <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <h1 className="mb-5 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
         おしらせ
       </h1>
 
@@ -62,7 +62,7 @@ export default async function NewsPage({
       {subCats.length > 0 && (
         <nav
           aria-label="サブカテゴリ"
-          className="mb-4 flex flex-wrap gap-2 border-l-2 border-gray-200 pl-3"
+          className="mb-4 flex flex-wrap gap-2 border-l-2 border-hairline pl-3"
         >
           <FilterChip
             label={`${activeTop!.name}（すべて）`}
@@ -82,7 +82,7 @@ export default async function NewsPage({
         </nav>
       )}
 
-      <p className="mb-2 text-sm text-gray-500">
+      <p className="mb-3 text-sm text-ink-muted">
         {selected ? `「${selected.name}」` : '全'}
         {total}件
       </p>
@@ -92,29 +92,29 @@ export default async function NewsPage({
           <li key={a.id}>
             <Link
               href={`/news/${a.id}`}
-              className="flex h-full flex-col gap-1 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
+              className="group flex h-full flex-col gap-1.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
             >
-              <span className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+              <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
                 {a.is_pinned && (
-                  <span className="rounded bg-primary px-2 py-0.5 text-primary-foreground">
+                  <span className="rounded-full bg-primary px-2.5 py-0.5 font-medium text-primary-foreground">
                     重要
                   </span>
                 )}
                 {a.category?.name && (
-                  <span className="rounded bg-gray-100 px-2 py-0.5">
+                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
                     {a.category.name}
                   </span>
                 )}
                 <span>{formatDate(a.published_at)}</span>
               </span>
-              <span className="text-lg leading-snug font-medium">
+              <span className="text-lg leading-snug font-medium text-ink group-hover:text-primary">
                 {a.title}
               </span>
             </Link>
           </li>
         ))}
         {items.length === 0 && (
-          <li className="col-span-full py-8 text-center text-gray-500">
+          <li className="col-span-full rounded-xl border border-dashed border-surface-muted bg-card py-10 text-center text-ink-muted">
             該当するお知らせはありません。
           </li>
         )}
@@ -147,11 +147,11 @@ function FilterChip({
       href={href}
       aria-current={active ? 'page' : undefined}
       className={[
-        'inline-flex min-h-[36px] items-center rounded-full border px-3',
+        'inline-flex min-h-[36px] items-center rounded-full border px-3.5 transition-colors',
         small ? 'text-sm' : '',
         active
-          ? 'border-primary bg-primary text-primary-foreground'
-          : 'border-gray-300 bg-white text-gray-800',
+          ? 'border-primary bg-primary font-medium text-primary-foreground'
+          : 'border-surface-muted bg-card text-ink hover:border-primary hover:text-primary',
       ].join(' ')}
     >
       {label}
@@ -176,19 +176,25 @@ function Pager({
     return qs ? `/news?${qs}` : '/news'
   }
   return (
-    <div className="mt-6 flex items-center justify-between gap-2">
+    <div className="mt-8 flex items-center justify-between gap-2">
       {page > 1 ? (
-        <Link href={base(page - 1)} className="rounded border px-4 py-2">
+        <Link
+          href={base(page - 1)}
+          className="rounded-lg border border-surface-muted bg-card px-4 py-2 font-medium text-ink transition-colors hover:border-primary hover:text-primary"
+        >
           ← 前へ
         </Link>
       ) : (
         <span />
       )}
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-ink-muted">
         {page} / {totalPages} ページ
       </span>
       {page < totalPages ? (
-        <Link href={base(page + 1)} className="rounded border px-4 py-2">
+        <Link
+          href={base(page + 1)}
+          className="rounded-lg border border-surface-muted bg-card px-4 py-2 font-medium text-ink transition-colors hover:border-primary hover:text-primary"
+        >
           次へ →
         </Link>
       ) : (

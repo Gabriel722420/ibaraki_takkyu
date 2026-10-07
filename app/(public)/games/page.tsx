@@ -21,14 +21,16 @@ export default async function GamesPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
-      <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
+    <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <h1 className="mb-6 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
         大会情報
       </h1>
 
       {years.map((grp) => (
-        <section key={grp.year} className="mb-8">
-          <h2 className="mb-2 text-xl font-bold">{grp.year}年度</h2>
+        <section key={grp.year} className="mb-10">
+          <h2 className="mb-3 text-[1.3rem] font-semibold tracking-[-0.01em]">
+            {grp.year}年度
+          </h2>
           <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {grp.items.map((g) => {
               const status = gameStatus({
@@ -40,13 +42,13 @@ export default async function GamesPage() {
                 <li key={g.id}>
                   <Link
                     href={`/games/${g.id}`}
-                    className="flex h-full items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
+                    className="group flex h-full items-center gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
                         <StatusBadge status={status} />
                         {g.division?.name && (
-                          <span className="rounded bg-gray-100 px-2 py-0.5">
+                          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
                             {g.division.name}
                           </span>
                         )}
@@ -56,12 +58,12 @@ export default async function GamesPage() {
                             : '日程調整中'}
                         </span>
                       </div>
-                      <span className="mt-0.5 block text-lg leading-snug font-medium">
+                      <span className="mt-1 block text-lg leading-snug font-medium text-ink group-hover:text-primary">
                         {g.title}
                       </span>
                     </div>
                     {status === 'published' && (
-                      <span className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-bold text-primary-foreground">
+                      <span className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">
                         結果
                       </span>
                     )}
@@ -74,7 +76,7 @@ export default async function GamesPage() {
       ))}
 
       {games.length === 0 && (
-        <p className="py-8 text-center text-gray-500">
+        <p className="rounded-xl border border-dashed border-surface-muted bg-card py-10 text-center text-ink-muted">
           大会情報はまだありません。
         </p>
       )}
@@ -82,15 +84,16 @@ export default async function GamesPage() {
   )
 }
 
+// 状態は mono+accent の濃淡で表現（他の色相を足さない・DESIGN.md StatusBadge）
 function StatusBadge({ status }: { status: GameStatus }) {
   const cls =
     status === 'published'
-      ? 'bg-green-100 text-green-800'
+      ? 'bg-primary text-primary-foreground'
       : status === 'awaiting'
-        ? 'bg-amber-100 text-amber-800'
-        : 'bg-blue-100 text-blue-800'
+        ? 'bg-[#f0f0f0] text-ink-muted'
+        : 'border border-primary/40 bg-primary/5 text-primary'
   return (
-    <span className={`rounded px-2 py-0.5 ${cls}`}>
+    <span className={`rounded-full px-2.5 py-0.5 font-medium ${cls}`}>
       {GAME_STATUS_LABEL[status]}
     </span>
   )

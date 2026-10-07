@@ -16,31 +16,37 @@ export default async function NewsDetail({
   if (!a) notFound()
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6 md:px-6">
-      <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
-        {a.is_pinned && (
-          <span className="rounded bg-primary px-2 py-0.5 text-primary-foreground">
-            重要
-          </span>
+    <main className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-10">
+      <article className="rounded-xl border border-hairline bg-card p-5 md:p-8">
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+          {a.is_pinned && (
+            <span className="rounded-full bg-primary px-2.5 py-0.5 font-medium text-primary-foreground">
+              重要
+            </span>
+          )}
+          {a.category?.name && (
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
+              {a.category.name}
+            </span>
+          )}
+          <span>{formatDate(a.published_at)}</span>
+        </div>
+        <h1 className="mb-5 text-[1.45rem] leading-snug font-semibold tracking-[-0.02em] md:text-[1.6rem]">
+          {a.title}
+        </h1>
+        {a.body && (
+          <div
+            className="richtext text-ink"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(toContentHtml(a.body)),
+            }}
+          />
         )}
-        {a.category?.name && (
-          <span className="rounded bg-gray-100 px-2 py-0.5">
-            {a.category.name}
-          </span>
-        )}
-        <span>{formatDate(a.published_at)}</span>
-      </div>
-      <h1 className="mb-4 text-2xl leading-snug font-bold">{a.title}</h1>
-      {a.body && (
-        <div
-          className="richtext text-gray-800"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(toContentHtml(a.body)) }}
-        />
-      )}
-      <div className="mt-8">
+      </article>
+      <div className="mt-6">
         <Link
           href="/news"
-          className="text-primary underline-offset-4 hover:underline"
+          className="inline-flex items-center font-medium text-primary underline-offset-4 hover:underline"
         >
           ← おしらせ一覧へ
         </Link>

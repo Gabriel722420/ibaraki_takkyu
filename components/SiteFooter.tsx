@@ -14,10 +14,14 @@ export async function SiteFooter() {
         <div className="grid gap-8 sm:grid-cols-2">
           {/* 組織情報・問い合わせ */}
           <div>
-            <p className="text-lg font-bold">一般社団法人茨城県卓球連盟</p>
+            <p className="text-lg font-semibold tracking-[-0.01em]">
+              一般社団法人茨城県卓球連盟
+            </p>
             {contact && (
               <div className="mt-4">
-                <p className="text-sm font-bold text-white/90">お問い合わせ</p>
+                <p className="text-sm font-semibold text-white/90">
+                  お問い合わせ
+                </p>
                 <address className="mt-1 text-sm leading-relaxed whitespace-pre-line text-white/90 not-italic">
                   {contact}
                 </address>
@@ -27,7 +31,9 @@ export async function SiteFooter() {
 
           {/* サイト内導線 */}
           <nav aria-label="フッターメニュー">
-            <p className="text-sm font-bold text-white/90">サイト内メニュー</p>
+            <p className="text-sm font-semibold text-white/90">
+              サイト内メニュー
+            </p>
             <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3">
               {NAV.map((n) => (
                 <li key={n.href}>

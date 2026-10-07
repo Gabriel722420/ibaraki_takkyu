@@ -21,7 +21,7 @@ export function TextSizeToggle({ initial }: { initial: Size }) {
       aria-label="文字の大きさ"
       className="flex items-center gap-1"
     >
-      <span aria-hidden className="mr-1 text-sm text-gray-600">
+      <span aria-hidden className="mr-1 text-sm text-ink-muted">
         文字サイズ
       </span>
       {OPTIONS.map((o) => (
@@ -31,11 +31,11 @@ export function TextSizeToggle({ initial }: { initial: Size }) {
           onClick={() => apply(o.value)}
           aria-pressed={size === o.value}
           className={[
-            'flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border leading-none',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1',
+            'flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border leading-none transition-colors',
+            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
             size === o.value
-              ? 'border-black bg-black text-white'
-              : 'border-gray-300 bg-white text-gray-800',
+              ? 'border-primary bg-primary text-white'
+              : 'border-surface-muted bg-white text-ink hover:border-primary hover:text-primary',
           ].join(' ')}
           style={{ fontSize: `${o.px}px`, padding: '0 12px' }}
         >

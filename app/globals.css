@@ -3,15 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── 公開デザイントークン（#0049a2 基調・不変） ──
+/* ── 公開デザイントークン（Airbnbベース / #0049a2 基調・不変） ──
+   由来と規律は docs/DESIGN.md（Tokens が正）。モノクロ + #0049a2 の1アクセント。
    ここで直接 hex を持つ色は shadcn の再マップ対象にしない＝公開側は従来どおり。
    shadcn の primary もこの --color-primary(#0049a2) を参照するため一致する。 */
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #1a1a1a;
-  --color-primary: #0049a2;
+  --color-foreground: #222222; /* text */
+  --color-primary: #0049a2; /* accent */
   --color-primary-foreground: #ffffff;
-  --color-border: #e5e7eb;
+  --color-accent-strong: #003a82; /* accent-hover */
+  --color-border: #ebebeb; /* hairline（公開カード枠・shadcn境界と共用） */
+  --color-canvas: #f7f7f7; /* ページ背景（オフ白） */
+  --color-hairline: #ebebeb; /* 境界線（セマンティック別名） */
+  --color-ink: #222222; /* text */
+  --color-ink-muted: #6a6a6a; /* muted（メタ・補助） */
+  --color-ink-faint: #c1c1c1; /* disabled */
+  --color-surface-muted: #dddddd; /* 中立の面 */
 }
 
 /* ── ユニバーサルデザイン：文字サイズ切替の基点（公開・不変） ── */
@@ -26,9 +34,23 @@ html[data-textsize='xlarge'] {
 }
 body {
   background: #ffffff;
-  color: #1a1a1a;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #222222;
+  /* 欧文/数字=Inter → 和文=Noto Sans JP → Arial フォールバック（DESIGN.md） */
+  font-family:
+    var(--font-inter), var(--font-noto), Arial, Helvetica, sans-serif;
   line-height: 1.7;
+}
+
+/* ── 公開サイト共通（.site スコープ）。canvas 背景＋フォーカス可視を全要素で担保。
+   管理画面(admin-shell)は別 route group・.site を持たないため一切非影響。 ── */
+.site {
+  background: var(--color-canvas);
+}
+.site a:focus-visible,
+.site button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* ── リッチ本文（公開表示・エディタ共通）。rem基準で文字サイズ切替に追従 ── */

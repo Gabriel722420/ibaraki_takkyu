@@ -1,3 +1,4 @@
+import { FileText } from 'lucide-react'
 import { listResources } from '@/lib/queries'
 import { resolveDocUrl } from '@/lib/docs'
 import type { Resource } from '@/lib/types'
@@ -22,14 +23,16 @@ export default async function RegistrationPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
-      <h1 className="mb-4 border-l-4 border-primary pl-2 text-2xl font-bold">
+    <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <h1 className="mb-6 border-l-4 border-primary pl-3 text-[1.45rem] font-medium tracking-[-0.02em]">
         登録・資格情報
       </h1>
 
       {groups.map((g) => (
-        <section key={g.category} className="mb-8">
-          <h2 className="mb-2 text-xl font-bold">{g.category}</h2>
+        <section key={g.category} className="mb-10">
+          <h2 className="mb-3 text-[1.3rem] font-semibold tracking-[-0.01em]">
+            {g.category}
+          </h2>
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {g.items.map((r) => {
               const url = resolveDocUrl(r)
@@ -40,17 +43,23 @@ export default async function RegistrationPage() {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block h-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base font-medium transition hover:border-primary/40 hover:shadow-sm active:bg-gray-50"
+                      className="group flex h-full items-center gap-3 rounded-lg border border-hairline bg-card px-4 py-3 font-medium text-ink transition-colors hover:border-primary/40 hover:bg-primary/[0.03] active:bg-primary/5"
                     >
-                      {r.title}
-                      {r.external_url && (
-                        <span className="ml-1 text-sm text-gray-500">
-                          （外部サイト）
-                        </span>
-                      )}
+                      <FileText
+                        className="size-5 shrink-0 text-primary"
+                        aria-hidden
+                      />
+                      <span className="group-hover:text-primary">
+                        {r.title}
+                        {r.external_url && (
+                          <span className="ml-1 text-sm font-normal text-ink-muted">
+                            （外部サイト）
+                          </span>
+                        )}
+                      </span>
                     </a>
                   ) : (
-                    <span className="block h-full rounded-lg border border-gray-200 px-4 py-3 text-base text-gray-500">
+                    <span className="flex h-full items-center rounded-lg border border-hairline px-4 py-3 text-ink-faint">
                       {r.title}
                     </span>
                   )}
@@ -62,7 +71,7 @@ export default async function RegistrationPage() {
       ))}
 
       {resources.length === 0 && (
-        <p className="py-8 text-center text-gray-500">
+        <p className="rounded-xl border border-dashed border-surface-muted bg-card py-10 text-center text-ink-muted">
           現在、掲載中の資料はありません。
         </p>
       )}
