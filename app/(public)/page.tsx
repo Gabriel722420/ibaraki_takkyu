@@ -23,7 +23,7 @@ export default async function Home() {
   // 実データの重心＝おしらせ(2049件)。大会は今後の新規のみ（当面少数）。
   // すべて既存クエリの流用（表示のみ・データ取得は不変）。
   const [news, games, categories] = await Promise.all([
-    listAnnouncements({ perPage: 6 }),
+    listAnnouncements({ perPage: 18 }),
     listUpcomingGames(6),
     listCategories(),
   ])
@@ -46,32 +46,20 @@ export default async function Home() {
           aria-hidden
           className="absolute inset-0 -z-20 size-full object-cover object-[70%_30%]"
         />
-        {/* ブランドウォッシュ：左は濃く＝白文字を保護、右は薄め＝実写(ネット/台)を活かす。
-            モバイルはやや濃いめ、md以上で右を大きく開けて写真を主役化。青一色で統一。 */}
+        {/* ブランドウォッシュ：テキストを撤去したビジュアル専用KV。白文字保護が不要に
+            なったため、写真を主役にしつつ #0049a2 で全体を薄く統一する均一寄りの敷き。 */}
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/95 via-primary/80 to-primary/45 md:from-primary/94 md:via-primary/60 md:to-primary/15"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/75 via-primary/50 to-primary/35 md:from-primary/65 md:via-primary/40 md:to-primary/25"
         />
         {/* 下端スクリム：入口カードの重なりを馴染ませる */}
         <div
           aria-hidden
           className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-primary/85 to-transparent"
         />
-        <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-24 md:px-6 md:pt-20 md:pb-28 lg:px-8">
-          {/* 連盟名はヘッダーが担う。ヒーローは写真＋ウォッシュを主役に、
-              重複を避けて「用途を示す簡潔な見出し＋リード」のみ置く（連盟名は反復しない）。
-              改行は inline-block の2分割で制御し、1文字だけ落ちる不格好な折返しを防ぐ。 */}
-          <span className="inline-flex items-center rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white backdrop-blur-sm">
-            公式サイト
-          </span>
-          <h1 className="mt-5 text-[1.45rem] leading-[1.18] font-bold tracking-[-0.02em] sm:text-[2rem] md:text-[2.3rem]">
-            <span className="inline-block whitespace-nowrap">大会・登録・各種資料</span>
-            <span className="inline-block whitespace-nowrap">のご案内</span>
-          </h1>
-          <p className="mt-4 max-w-prose leading-relaxed text-white/90">
-            大会情報・結果、選手登録、各種資料をご案内します。
-          </p>
-        </div>
+        {/* テキスト無しKV：連盟名/ロゴはヘッダーが担うため画像＋ウォッシュのみで成立。
+            高さを明示して間延びを防ぐ（下端は入口カードの重なり -mt-16 を受ける）。 */}
+        <div className="h-[200px] sm:h-[260px] md:h-[320px] lg:h-[360px]" />
       </section>
 
       {/* 2. 各種情報への入口（主役）。ヒーロー下端に重ねて浮かせる */}
