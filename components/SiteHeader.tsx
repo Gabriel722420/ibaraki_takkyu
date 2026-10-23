@@ -21,7 +21,7 @@ export async function SiteHeader() {
             <BrandMark tile="#ffffff" symbol="#0049a2" className="size-11 shrink-0 rounded-[10px]" />
             <span className="flex flex-col leading-tight">
               <span className="text-xs text-white/80">一般社団法人</span>
-              <span className="text-lg font-semibold tracking-[-0.01em]">
+              <span className="text-base font-semibold tracking-[-0.01em] md:text-lg">
                 茨城県卓球連盟
               </span>
             </span>
