@@ -17,21 +17,23 @@ export function MainNav() {
     <nav aria-label="メインメニュー" className="border-b border-hairline bg-card">
       <div className="mx-auto max-w-6xl px-2 md:px-4 lg:px-6">
         {/* モバイル（md未満）：横並び5項目は2段折返し＋高占有でファーストビューを
-            潰すため「メニュー」ボタン1つに集約。タップで下に縦並びパネルを展開。 */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          className="flex min-h-[44px] w-full items-center gap-2 px-2 text-[1.0625rem] font-medium text-ink transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 md:hidden"
-        >
-          {open ? (
-            <X className="size-6 text-primary" aria-hidden />
-          ) : (
-            <Menu className="size-6 text-primary" aria-hidden />
-          )}
-          メニュー
-        </button>
+            潰すため「メニュー」ボタン1つに集約。定石どおり右端配置（ロゴ左／操作右）。 */}
+        <div className="flex md:hidden">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            className="ml-auto inline-flex min-h-[44px] items-center gap-2 px-2 text-[1.0625rem] font-medium text-ink transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
+          >
+            {open ? (
+              <X className="size-6 text-primary" aria-hidden />
+            ) : (
+              <Menu className="size-6 text-primary" aria-hidden />
+            )}
+            メニュー
+          </button>
+        </div>
 
         {/* デスクトップ/タブレット（md以上）：従来の横並びナビを維持 */}
         <ul className="hidden gap-x-1 md:flex">
