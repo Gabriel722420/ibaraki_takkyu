@@ -19,7 +19,7 @@ export function TextSizeToggle({ initial }: { initial: Size }) {
     <div
       role="group"
       aria-label="文字の大きさ"
-      className="flex items-center gap-1"
+      className="flex items-center gap-[4px]"
     >
       {/* ラベルはスマホでは隠して青帯を1行に収める（切替あボタン自体は常時表示）。
           sr-only の各ボタン説明で読み上げ時の意味は維持。 */}

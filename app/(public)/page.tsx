@@ -58,35 +58,38 @@ export default async function Home() {
           className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-primary/85 to-transparent"
         />
         {/* テキスト無しKV：連盟名/ロゴはヘッダーが担うため画像＋ウォッシュのみで成立。
-            高さを明示して間延びを防ぐ（下端は入口カードの重なり -mt-16 を受ける）。 */}
-        <div className="h-[200px] sm:h-[260px] md:h-[320px] lg:h-[360px]" />
+            スマホは写真を主役化するため高めに確保（従来200pxは入口カードの重なりで潰れていた）。 */}
+        <div className="h-[240px] sm:h-[280px] md:h-[320px] lg:h-[360px]" />
       </section>
 
-      {/* 2. 各種情報への入口（主役）。ヒーロー下端に重ねて浮かせる */}
-      <section className="relative z-10 -mt-16">
+      {/* 2. 各種情報への入口（主役）。ヒーロー下端に重ねて浮かせる。
+          スマホは重なりを浅く(-mt-10)して卓球台写真を十分見せる。sm+は従来どおり(-mt-16)。 */}
+      <section className="relative z-10 -mt-10 sm:-mt-16">
         <div className="mx-auto max-w-6xl px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+          {/* スマホは1列の横並びカード（アイコン左＋テキスト右）で文字が窮屈に折返さない。
+              sm以上は従来の2列(縦積みアイコンカード)、lgで4列。 */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
             <EntryCard
               href="/games"
-              icon={<Trophy className="size-7" aria-hidden />}
+              icon={<Trophy className="size-[22px] sm:size-7" aria-hidden />}
               label="大会情報"
               desc="日程・要項・組合せ・結果"
             />
             <EntryCard
               href="/registration"
-              icon={<ClipboardList className="size-7" aria-hidden />}
+              icon={<ClipboardList className="size-[22px] sm:size-7" aria-hidden />}
               label="登録・資格情報"
               desc="選手登録・各種様式"
             />
             <EntryCard
               href="/about"
-              icon={<Building2 className="size-7" aria-hidden />}
+              icon={<Building2 className="size-[22px] sm:size-7" aria-hidden />}
               label="連盟情報"
               desc="会長挨拶・役員・規程"
             />
             <EntryCard
               href="/registration"
-              icon={<FolderOpen className="size-7" aria-hidden />}
+              icon={<FolderOpen className="size-[22px] sm:size-7" aria-hidden />}
               label="各種資料"
               desc="申込書・様式などの資料"
             />
@@ -303,26 +306,32 @@ function EntryCard({
   return (
     <Link
       href={href}
-      /* 入口カードはヒーローに重なる（-mt-16）。hover 背景は必ず不透明にする：
-         bg-primary/[0.03] のような半透明だとカードが透けてヒーローの青が上半分に出る破綻になる。 */
-      className="group relative flex flex-col gap-3 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] md:p-5"
+      /* スマホ=横並び(アイコン左/テキスト右)で全幅を使い文字を1行に収める（xlargeでも折返さない）。
+         sm以上=従来の縦積みアイコンカード。hover 背景は不透明（半透明だとヒーローの青が透ける破綻）。 */
+      className="group relative flex items-center gap-3.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] sm:flex-col sm:items-start sm:gap-3 md:p-5"
     >
-      {/* 右上に方向キュー（絶対配置でラベル折返しに干渉しない）。hoverで色＋ニュッジ */}
-      <ChevronRight
-        className="absolute top-4 right-4 size-5 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary md:top-5 md:right-5"
-        aria-hidden
-      />
-      {/* アイコンタイルは固定サイズ＆自己配置で確定（flex-col の stretch で横に伸びないよう
-          inline-grid + self-start + shrink-0 + 明示 w/h。hover 色はこの小タイルだけに限定） */}
-      <span className="inline-grid h-12 w-12 shrink-0 place-items-center self-start rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+      {/* アイコンタイル：スマホは左／sm+は上。スマホは固定px(44)でサイズ切替に連動させず
+          テキスト幅を確保（rem連動で肥大するとラベルが折返す）。sm+は従来どおり rem。 */}
+      <span className="inline-grid size-[44px] shrink-0 place-items-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white sm:size-12">
         {icon}
       </span>
-      {/* ラベルは全幅で1行に収まるサイズ（UD: モバイルでも約18px確保）。7文字の
-          「登録・資格情報」も含め全幅で mid-word 折返しを起こさない。 */}
-      <span className="text-[1.05rem] leading-snug font-semibold md:text-lg">
-        {label}
+      {/* テキスト：スマホは右に伸びて1行で収まる。min-w-0 で省略可（桁溢れ防止） */}
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-none sm:gap-1">
+        <span className="text-[1.05rem] leading-snug font-semibold md:text-lg">
+          {label}
+        </span>
+        {/* 単語の途中で改行させない（CJKは break-keep で ・ 等の区切りでのみ折返す）。
+            xlargeで2行になっても「結果」等を割らない。 */}
+        <span className="text-sm leading-snug break-keep text-ink-muted">
+          {desc}
+        </span>
       </span>
-      <span className="text-sm leading-snug text-ink-muted">{desc}</span>
+      {/* 方向キュー：スマホは非表示（カード全体がタップ可。横幅はラベルに全振り）。
+          sm+は従来どおり右上absolute（縦積み時にラベルへ干渉しない）。 */}
+      <ChevronRight
+        className="hidden shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:absolute sm:top-4 sm:right-4 sm:block sm:size-5 md:top-5 md:right-5"
+        aria-hidden
+      />
     </Link>
   )
 }
