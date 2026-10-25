@@ -51,7 +51,7 @@ export default async function GameDetail({
           return (
             <section key={type} className="mt-6 border-t border-hairline pt-6">
               <h2 className="mb-3 text-lg font-semibold">{type}</h2>
-              {/* 資料は大きなDLボタン（タップ44px+・#0049a2・ファイル名＋DL矢印）。
+              {/* 資料は大きなDLボタン（タップ44px+・#133e96・ファイル名＋DL矢印）。
                   PDF到達が核心のため押しやすさを最優先。 */}
               <ul className="space-y-2">
                 {group.map((doc) => {
@@ -63,7 +63,7 @@ export default async function GameDetail({
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex min-h-[3.25rem] items-center gap-3 rounded-xl border border-hairline bg-card px-4 py-3 font-semibold text-ink transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] active:bg-primary/5"
+                        className="group flex min-h-[3.25rem] items-center gap-3 rounded-xl border border-hairline bg-card px-4 py-3 font-semibold text-ink transition-colors hover:border-primary/40 hover:bg-[#eef3fc] active:bg-primary/5"
                       >
                         <FileText
                           className="size-6 shrink-0 text-primary"

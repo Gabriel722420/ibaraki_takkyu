@@ -24,13 +24,13 @@
   "search.exclude": { "**/node_modules": true, "**/.next": true },
 
   "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#0049a2",
-    "titleBar.inactiveBackground": "#0049a2",
+    "titleBar.activeBackground": "#133e96",
+    "titleBar.inactiveBackground": "#133e96",
     "titleBar.activeForeground": "#ffffff",
     "titleBar.inactiveForeground": "#cfe0f5",
-    "activityBar.background": "#0049a2",
+    "activityBar.background": "#133e96",
     "activityBar.foreground": "#ffffff",
-    "statusBar.background": "#0049a2",
+    "statusBar.background": "#133e96",
     "statusBar.foreground": "#ffffff"
   }
 }

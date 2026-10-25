@@ -17,20 +17,20 @@
 
 - 運用フローは不変：各担当者→メール→（管理者が）掲載。管理画面は単一管理者運用。
 - 記録の掲載期間：**現運用は全期間公開**（games の retention フィルタは撤廃済み）。settings.record_retention_years と getRetentionYears() は残置＝理事会決定で再導入可（適用ポイントは lib/queries にコメント）。
-- 高齢利用者が多い → 公開側は文字サイズ切替（UD・rem連動）＋大きめ余白＋Arial。**公開側デザインは #0049a2 基調で不変を厳守**。
+- 高齢利用者が多い → 公開側は文字サイズ切替（UD・rem連動）＋大きめ余白＋Arial。**公開側デザインは #133e96 基調で不変を厳守**。
 - PDF は管理画面から直接アップロード（FTP廃止・documents バケット・物理パス uuid 固定・title が表示名）。5MB超のスキャンPDFはブラウザ内で自動圧縮（pdfjs-dist+jspdf、失敗時は原本）。
 
 ## 現状の到達点（実装済み）
 
 - **命名**：tournaments を games に全レイヤーリネーム済み（URL/コード/DB）。
-- **公開ページ**：TOP（最新お知らせ/近日大会）、/news（一覧＝カテゴリ階層絞り込み＋ページング, /news/[id]）、/games（年度括りの年間一覧＋状態自動判定 予定/結果待ち/結果掲載済み, /games/[id] は要項/組合せ/結果/連絡を集約）、/registration（resources を category グルーピング）、/about（会長挨拶/役員/規程・DB化）、/policy（著作権/商標/免責/個人情報保護/問い合わせ・DB化）。共通ヘッダー/フッター（#0049a2）。
+- **公開ページ**：TOP（最新お知らせ/近日大会）、/news（一覧＝カテゴリ階層絞り込み＋ページング, /news/[id]）、/games（年度括りの年間一覧＋状態自動判定 予定/結果待ち/結果掲載済み, /games/[id] は要項/組合せ/結果/連絡を集約）、/registration（resources を category グルーピング）、/about（会長挨拶/役員/規程・DB化）、/policy（著作権/商標/免責/個人情報保護/問い合わせ・DB化）。共通ヘッダー/フッター（#133e96）。
 - **リッチ本文**：news.body / games.summary は Tiptap 製 HTML。表示は lib/sanitize（isomorphic-dompurify）でサニタイズ。本文内画像は images バケット（自動圧縮）。予約投稿（publish_at、クエリで公開判定・cron不要）。
 - **DB化された編集**：settings に会長挨拶(about_*)・ポリシー(policy_*)。officers（役員・階層グルーピング表示）、categories（お知らせ分類・parent_id で階層）。
 - **WP移行**：REST API 経由で 31カテゴリ＋2049記事を announcements へ全件移行済み（方式1＝1対1）。本文HTMLは **verbatim 保存（パス書き換えなし）**。冪等キー：categories.wp_term_id / announcements.wp_post_id。
   - ⚠ **本文中の絶対URL（https://takkyu.ibaraki.jp/pdf/... , /wp-content/uploads/...）はそのまま**。実ファイルは住吉が FTP で public/ 配下へ同一階層配置 → 同一ドメインへ切替、で生きる設計（**ドメイン切替と FTP 配置が密結合。最後に実施**）。
 - **認証/基盤**：Basic認証（middleware.ts・依存ゼロ）、GA4（G-6NZR9MQ159）、管理ログイン/ログアウト/パスワード変更。
 - **Route Group 分離**：`app/(public)/*`（公開・SiteHeader/Footer）と `app/admin/(panel)/*`（管理・shadcn サイドバー）。`app/admin/login` はグループ外（chrome無し）。ルート layout は `<html>` シェルのみ。
-- **管理UI**：shadcn/ui（Table/Dialog/DropdownMenu/Switch/sonner 等）で wp-admin 風（暗色サイドバー #1d2327・現在地のみ #0049a2 ハイライト・アイコン）。shadcn は `.admin-shell` スコープに隔離し公開側トークンを侵さない。
+- **管理UI**：shadcn/ui（Table/Dialog/DropdownMenu/Switch/sonner 等）で wp-admin 風（暗色サイドバー #1d2327・現在地のみ #133e96 ハイライト・アイコン）。shadcn は `.admin-shell` スコープに隔離し公開側トークンを侵さない。
 
 ## データモデル（supabase/migrations/）
 
@@ -52,7 +52,7 @@
 
 - サーバー/クライアント境界：next/headers 依存（lib/queries, lib/sanitize）をクライアントに巻き込まない。境界事故は build で検出。
 - SUPABASE_SERVICE_ROLE_KEY はサーバー専用（NEXT_PUBLIC_ 禁止）。.env.local はコミットしない。
-- shadcn は管理スコープのみ。**公開側の @theme(#0049a2)/Arial/文字サイズ切替を壊さない**（変更時は公開CSSに #0049a2/Arial 残存を必ず確認）。
+- shadcn は管理スコープのみ。**公開側の @theme(#133e96)/Arial/文字サイズ切替を壊さない**（変更時は公開CSSに #133e96/Arial 残存を必ず確認）。
 - service_role を使う Node スクリプトは supabase-js の realtime(WebSocket) が Node20 で落ちるため **PostgREST を直接 fetch**（scripts/migrate-wp.mjs 参照）。
 
 ## 今後の申し送り（残タスク）

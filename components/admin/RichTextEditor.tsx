@@ -10,7 +10,7 @@ import { uploadCompressedImage } from '@/lib/image-upload'
 // 固定パレット（自由入力は不可）
 const COLORS: { label: string; value: string }[] = [
   { label: '標準', value: '#1a1a1a' },
-  { label: '青', value: '#0049a2' },
+  { label: '青', value: '#133e96' },
   { label: '赤', value: '#c0392b' },
   { label: '緑', value: '#2e7d32' },
 ]
@@ -124,7 +124,7 @@ function Toolbar({
   uploading: boolean
 }) {
   const btn = 'rounded border px-2 py-1 text-sm min-w-[2.25rem] min-h-[2.25rem]'
-  const on = 'bg-black text-white'
+  const on = 'bg-primary text-white'
   const off = 'bg-white text-gray-800'
   return (
     <div className="flex flex-wrap items-center gap-1 rounded-t border bg-gray-50 p-1">

@@ -82,7 +82,7 @@ export function DocumentsEditor({
               <button
                 onClick={confirmAdd}
                 disabled={saving || !pending.title.trim()}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+                className="rounded bg-primary px-4 py-2 text-white transition-colors hover:bg-[#0f3277] disabled:opacity-50"
               >
                 {saving ? '保存中…' : 'この内容で追加'}
               </button>
@@ -173,7 +173,7 @@ function DocRow({
         <button
           onClick={save}
           disabled={busy || !dirty || !title.trim()}
-          className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
+          className="rounded bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#0f3277] disabled:opacity-50"
         >
           保存
         </button>

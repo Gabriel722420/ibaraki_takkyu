@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { NAV } from '@/lib/nav'
 import { getPolicySettings } from '@/lib/queries'
 
-// 公開フッター（#0049a2 基調・写真なし）。組織情報・グロナビ導線・問い合わせ・ポリシーを整然と。
+// 公開フッター（#133e96 基調・写真なし）。組織情報・グロナビ導線・問い合わせ・ポリシーを整然と。
 export async function SiteFooter() {
   const year = new Date().getFullYear()
   // 問い合わせ先は既存 settings（policy_contact）を流用（空なら該当ブロックを出さない）。

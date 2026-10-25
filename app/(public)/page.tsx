@@ -33,7 +33,7 @@ export default async function Home() {
 
   return (
     <main>
-      {/* 1. ヒーロー：実写の卓球台・ネット（人物なし / AI生成しない）を #0049a2 の
+      {/* 1. ヒーロー：実写の卓球台・ネット（人物なし / AI生成しない）を #133e96 の
           ブランドウォッシュで敷く。左は濃く＝白文字を保護、右は薄め＝写真を見せる。
           出典: Pexels(Julia Dibrova) / Pexels License・public/hero-table.jpg にセルフホスト。
           ロゴ/写真差し替えは <img> 1箇所。画像が落ちても下の bg-primary で青地を担保。 */}
@@ -47,7 +47,7 @@ export default async function Home() {
           className="absolute inset-0 -z-20 size-full object-cover object-[70%_30%]"
         />
         {/* ブランドウォッシュ：テキストを撤去したビジュアル専用KV。白文字保護が不要に
-            なったため、写真を主役にしつつ #0049a2 で全体を薄く統一する均一寄りの敷き。 */}
+            なったため、写真を主役にしつつ #133e96 で全体を薄く統一する均一寄りの敷き。 */}
         <div
           aria-hidden
           className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/75 via-primary/50 to-primary/35 md:from-primary/65 md:via-primary/40 md:to-primary/25"
@@ -308,7 +308,7 @@ function EntryCard({
       href={href}
       /* スマホ=横並び(アイコン左/テキスト右)で全幅を使い文字を1行に収める（xlargeでも折返さない）。
          sm以上=従来の縦積みアイコンカード。hover 背景は不透明（半透明だとヒーローの青が透ける破綻）。 */
-      className="group relative flex items-center gap-3.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-[#f2f6fd] sm:flex-col sm:items-start sm:gap-3 md:p-5"
+      className="group relative flex items-center gap-3.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-[#eef3fc] sm:flex-col sm:items-start sm:gap-3 md:p-5"
     >
       {/* アイコンタイル：スマホは左／sm+は上。スマホは固定px(44)でサイズ切替に連動させず
           テキスト幅を確保（rem連動で肥大するとラベルが折返す）。sm+は従来どおり rem。 */}

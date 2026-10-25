@@ -3,16 +3,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── 公開デザイントークン（Airbnbベース / #0049a2 基調・不変） ──
-   由来と規律は docs/DESIGN.md（Tokens が正）。モノクロ + #0049a2 の1アクセント。
+/* ── 公開デザイントークン（Airbnbベース / #133e96 基調・不変） ──
+   由来と規律は docs/DESIGN.md（Tokens が正）。モノクロ + #133e96 の1アクセント。
    ここで直接 hex を持つ色は shadcn の再マップ対象にしない＝公開側は従来どおり。
-   shadcn の primary もこの --color-primary(#0049a2) を参照するため一致する。 */
+   shadcn の primary もこの --color-primary(#133e96) を参照するため一致する。 */
 @theme {
   --color-background: #ffffff;
   --color-foreground: #222222; /* text */
-  --color-primary: #0049a2; /* accent */
+  --color-primary: #133e96; /* accent */
   --color-primary-foreground: #ffffff;
-  --color-accent-strong: #003a82; /* accent-hover */
+  --color-accent-strong: #0f3277; /* accent-hover */
   --color-border: #ebebeb; /* hairline（公開カード枠・shadcn境界と共用） */
   --color-canvas: #f7f7f7; /* ページ背景（オフ白） */
   --color-hairline: #ebebeb; /* 境界線（セマンティック別名） */
@@ -92,7 +92,7 @@ body {
 
 /* ── 本文中の資料リンク（PDF/Word/Excel等）を大きなDLボタン化（公開のみ=.site スコープ） ──
    WP移行記事は本文が薄く添付PDFが主体。href 拡張子で検出しボタン化（href は書き換えない）。
-   タップ領域 ≥44px・#0049a2 のファイルアイコン＋右端にDL矢印。admin エディタ(.site 外)は不変。 */
+   タップ領域 ≥44px・#133e96 のファイルアイコン＋右端にDL矢印。admin エディタ(.site 外)は不変。 */
 .site
   .richtext
   a:is(
@@ -182,7 +182,7 @@ body {
     [href$='.zip']
   ):hover {
   border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
-  background: #f2f6fd;
+  background: #eef3fc;
   color: var(--color-primary);
 }
 .site
@@ -253,23 +253,23 @@ body {
   --secondary-foreground: #1a1a1a;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #eaf1fb;
-  --accent-foreground: #0049a2;
+  --accent: #e9f0fb;
+  --accent-foreground: #133e96;
   --destructive: #c0392b;
   --destructive-foreground: #ffffff;
   --input: #e5e7eb;
-  --ring: #0049a2;
+  --ring: #133e96;
   --radius: 0.5rem;
   /* wp-admin 風の暗色サイドバー（公開側は sidebar-* を使わないため非影響）。
-     hover は控えめな明色(#2c3338)。現在地の塗りは下の [data-active] ルールで #0049a2。 */
+     hover は控えめな明色(#2c3338)。現在地の塗りは下の [data-active] ルールで #133e96。 */
   --sidebar: #1d2327;
   --sidebar-foreground: #f0f0f1;
-  --sidebar-primary: #0049a2;
+  --sidebar-primary: #133e96;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #2c3338;
   --sidebar-accent-foreground: #f0f0f1;
   --sidebar-border: #2c3338;
-  --sidebar-ring: #2271b1;
+  --sidebar-ring: #2b57b8;
 }
 
 /* サイドバー項目の塗りを確定的に制御（shadcn は data-active="false" 属性が常に付くため、
@@ -284,7 +284,7 @@ body {
   color: #ffffff;
 }
 .admin-shell [data-sidebar='menu-button'][data-active='true'] {
-  background-color: var(--color-primary); /* 現在地のみ #0049a2 */
+  background-color: var(--color-primary); /* 現在地のみ #133e96 */
   color: #ffffff;
 }
 
