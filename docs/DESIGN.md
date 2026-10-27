@@ -61,7 +61,8 @@
 ## Components
 
 - **Header**: #133e96 帯に **白抜きエンブレムを直接**置く（白タイルは使わない＝浮き/白の干渉/入れ子を解消）+ 白ワードマーク「一般社団法人／茨城県卓球連盟」+ 文字サイズ切替（白地カード）。白エンブレム＋白テキストで「白一色のロゴ」として帯に馴染ませる。ロゴ全体は header 尺で文字が潰れるため **シンボル＋ワードマーク** 構成。下に白ナビ（現在地=`bg-primary/10` + 下線 border-primary + 太字 primary）。
-  - ロゴ資産: `ittl_logo.svg`（全ロゴ・余白トリミング済 viewBox）/ `ittl_mark.svg`（emblem・紺地/favicon用＝県の形=紺/選手=白）/ `ittl_mark_white.svg`（**ヘッダー用・白抜き版**＝県の形=白/選手=紺、紺帯に直接のせる派生）/ `app/icon.svg`（favicon＝白地角丸＋紺emblem）。**元ロゴ(ittl_logo.svg/ittl_mark.svg)の色は不改変**、白抜きは別ファイルの派生として管理。
+  - **エンブレムは `components/BrandLogoMark.tsx` でインラインSVG描画**（`<img src=svg>` は Safari/高DPI で intrinsic サイズ誤認→ラスタライズでジャギるため、ベクターDOMで全解像度シャープにする根治）。
+  - ロゴ資産: `ittl_logo.svg`（全ロゴ・余白トリミング済 viewBox）/ `ittl_mark.svg`（emblem・紺地/favicon用＝県の形=紺/選手=白）/ `ittl_mark_white.svg`（白抜き版の単体アセット＝純ベクター・tight viewBox・width/height明示。ヘッダーは同じ emblem パスを BrandLogoMark でインライン）/ `app/icon.svg`（favicon＝白地角丸＋紺emblem）。**元ロゴ(ittl_logo.svg/ittl_mark.svg)の色は不改変**、白抜きは派生。全て `<image>`/base64 ラスター不使用の純ベクター。
 - **Hero（TOP）**: 卓球台の実写（`public/hero-table.jpg`）を `#133e96` のブランドウォッシュ（左濃→右淡のグラデ）で敷く。テキストは置かず画像＋ウォッシュのみで成立（連盟名はヘッダーが担う）。
 - **Card**: `bg-card border border-hairline rounded-xl p-4`。影なし。見出し 500/600、メタ muted。
 - **Badge/Chip**: pill。状態は **mono+accent** で表現（下記）。
