@@ -6,8 +6,9 @@ import {
   renameDocument,
   updateDocType,
   deleteDocument,
+  addGameUpdate,
 } from './actions'
-import { DOC_ORDER } from '@/lib/docs'
+import { DOC_ORDER, DOC_LABEL } from '@/lib/docs'
 import type { GameDocument, DocType } from '@/lib/types'
 
 export function DocumentsEditor({
@@ -23,6 +24,9 @@ export function DocumentsEditor({
     title: string
   } | null>(null)
   const [saving, setSaving] = useState(false)
+  // ④ 半自動起票：アップと同時に「大会情報更新履歴（TOP）」へ載せる
+  const [postUpdate, setPostUpdate] = useState(false)
+  const [updateBody, setUpdateBody] = useState('')
 
   async function confirmAdd() {
     if (!pending) return
@@ -34,7 +38,12 @@ export function DocumentsEditor({
         title: pending.title,
         filePath: pending.filePath,
       })
+      if (postUpdate && updateBody.trim()) {
+        await addGameUpdate({ gameId, body: updateBody.trim() })
+      }
       setPending(null)
+      setPostUpdate(false)
+      setUpdateBody('')
     } finally {
       setSaving(false)
     }
@@ -53,10 +62,13 @@ export function DocumentsEditor({
           >
             {DOC_ORDER.map((t) => (
               <option key={t} value={t}>
-                {t}
+                {DOC_LABEL[t]}
               </option>
             ))}
           </select>
+          <span className="text-xs text-gray-500">
+            2027大会〜は「上位結果（永続）／詳細結果（365日で非表示）」を使用
+          </span>
         </div>
 
         {!pending ? (
@@ -78,16 +90,54 @@ export function DocumentsEditor({
               }
               className="w-full rounded border px-3 py-2"
             />
+
+            {/* ④ 半自動起票：TOPの大会情報更新履歴に載せる（任意） */}
+            <label className="flex items-center gap-2 pt-1">
+              <input
+                type="checkbox"
+                checked={postUpdate}
+                onChange={(e) => {
+                  setPostUpdate(e.target.checked)
+                  if (e.target.checked && !updateBody.trim()) {
+                    setUpdateBody(
+                      `「${pending.title}」（${DOC_LABEL[docType]}）をアップしました。`,
+                    )
+                  }
+                }}
+                className="h-5 w-5"
+              />
+              <span className="text-sm">
+                大会情報更新履歴（TOP）に載せる
+              </span>
+            </label>
+            {postUpdate && (
+              <textarea
+                value={updateBody}
+                onChange={(e) => setUpdateBody(e.target.value)}
+                rows={2}
+                placeholder="例）〜の要項と申込書をアップしました。"
+                className="w-full rounded border px-3 py-2 text-sm"
+              />
+            )}
+
             <div className="flex gap-2">
               <button
                 onClick={confirmAdd}
-                disabled={saving || !pending.title.trim()}
+                disabled={
+                  saving ||
+                  !pending.title.trim() ||
+                  (postUpdate && !updateBody.trim())
+                }
                 className="rounded bg-primary px-4 py-2 text-white transition-colors hover:bg-[#0f3277] disabled:opacity-50"
               >
                 {saving ? '保存中…' : 'この内容で追加'}
               </button>
               <button
-                onClick={() => setPending(null)}
+                onClick={() => {
+                  setPending(null)
+                  setPostUpdate(false)
+                  setUpdateBody('')
+                }}
                 className="rounded border px-4 py-2"
               >
                 やめる
@@ -159,7 +209,7 @@ function DocRow({
         >
           {DOC_ORDER.map((t) => (
             <option key={t} value={t}>
-              {t}
+              {DOC_LABEL[t]}
             </option>
           ))}
         </select>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CalendarDays, Download, FileText } from 'lucide-react'
 import { getGame } from '@/lib/queries'
-import { resolveDocUrl, toContentHtml, DOC_ORDER } from '@/lib/docs'
+import { resolveDocUrl, toContentHtml, DOC_ORDER, DOC_LABEL } from '@/lib/docs'
 import { sanitizeHtml } from '@/lib/sanitize'
 
 export const revalidate = 300
@@ -50,7 +50,7 @@ export default async function GameDetail({
           if (group.length === 0) return null
           return (
             <section key={type} className="mt-6 border-t border-hairline pt-6">
-              <h2 className="mb-3 text-lg font-semibold">{type}</h2>
+              <h2 className="mb-3 text-lg font-semibold">{DOC_LABEL[type]}</h2>
               {/* 資料は大きなDLボタン（タップ44px+・#133e96・ファイル名＋DL矢印）。
                   PDF到達が核心のため押しやすさを最優先。 */}
               <ul className="space-y-2">

@@ -23,7 +23,7 @@
 ## 現状の到達点（実装済み）
 
 - **命名**：tournaments を games に全レイヤーリネーム済み（URL/コード/DB）。
-- **公開ページ**：TOP（最新お知らせ/近日大会）、/news（一覧＝カテゴリ階層絞り込み＋ページング, /news/[id]）、/games（年度括りの年間一覧＋状態自動判定 予定/結果待ち/結果掲載済み, /games/[id] は要項/組合せ/結果/連絡を集約）、/registration（resources を category グルーピング）、/about（会長挨拶/役員/規程・DB化）、/policy（著作権/商標/免責/個人情報保護/問い合わせ・DB化）。共通ヘッダー/フッター（#133e96）。
+- **公開ページ**：TOP（近日大会／④大会情報更新履歴(30日)／⑤NEWS=新規お知らせ(365日)の縦並び）、/news（一覧＝カテゴリ階層絞り込み＋ページング, /news/[id]）、/games（年度括りの年間一覧＋状態自動判定, /games/[id] は要項/組み合わせ/上位結果/詳細結果/お知らせを集約）、/registration、/about、/policy。共通ヘッダー/フッター（#133e96）。
 - **リッチ本文**：news.body / games.summary は Tiptap 製 HTML。表示は lib/sanitize（isomorphic-dompurify）でサニタイズ。本文内画像は images バケット（自動圧縮）。予約投稿（publish_at、クエリで公開判定・cron不要）。
 - **DB化された編集**：settings に会長挨拶(about_*)・ポリシー(policy_*)。officers（役員・階層グルーピング表示）、categories（お知らせ分類・parent_id で階層）。
 - **WP移行**：REST API 経由で 31カテゴリ＋2049記事を announcements へ全件移行済み（方式1＝1対1）。本文HTMLは **verbatim 保存（パス書き換えなし）**。冪等キー：categories.wp_term_id / announcements.wp_post_id。
@@ -36,13 +36,18 @@
 
 - 0001 初期：divisions / games(旧tournaments) / game_documents(要項・組合せ・結果・連絡) / announcements / resources / settings。
 - 0002 rename tournaments→games、0003 about(officers新設+settings)、0004 policy(settings+resources)、0005 policy_contact、0006 images(バケット+image_path)、0007 publish_at(予約投稿)、0008 categories(階層+announcements.category_id)。
-- 0009 forms（申込フォーム：forms / form_fields / form_submissions）※本タスクで追加。
+- 0009 forms（申込フォーム：forms / form_fields / form_submissions）。
+- 0010 result_two_tier（game_doc_type に 上位結果/詳細結果 を追加。レガシー結果は残置）。
+- 0011 game_updates（④大会情報更新履歴：手入力メッセージ＋部門タグ＋posted_at＋RLS）。
 - 公開は is_published=true（＋publish_at到来）で RLS 読取可、書込は authenticated のみ。Storage：documents(PDF/25MB)・images(jpg/png/webp/10MB)。
+- **掲載期間フィルタ（cron不要・動的）**：retentionCutoff(N)＝JST「今日−N日」を下限に .gte で判定。③詳細結果=365日(created_at)／④更新履歴=30日(posted_at)／⑤NEWS=365日(published_at)。③上位結果・レガシー結果は永続。
+- **③大会結果2層化（2027〜）**：詳細＝要項/組み合わせ/上位結果(永続)/詳細結果(365日)/お知らせ(=連絡の表示読替)。DOC_ORDER/DOC_LABEL/RESULT_DETAIL_RETENTION_DAYS は lib/docs.ts。2027線引きは fiscal_year＋運用規約＋UI既定（schemaフラグ無し）。
+- **⑤TOP NEWS=新規お知らせのみ**：wp_post_id IS NULL で移行2049件と区別（TOP非露出）。2049件は /news/[wp_post_id] で据え置き（本件対象外）。
 
 ## ディレクトリ
 
 - app/(public)/… 公開ページ（page=TOP, news, games, registration, about, policy）
-- app/admin/(panel)/… 管理（games, news, resources, categories, divisions, officers, about, policy, account, forms）＋ layout(shadcn Sidebar)
+- app/admin/(panel)/… 管理（games, game-updates, news, resources, categories, divisions, officers, about, policy, account, forms）＋ layout(shadcn Sidebar)。game-updates は大会PDFアップ画面(DocumentsEditor)からも半自動起票可。
 - app/admin/login … ログイン（ガード対象外）
 - components/ui/… shadcn。components/admin/… 管理共通（AdminShell, RowActions, FormKit, StatusBadges 等）
 - lib/queries.ts … **サーバー専用**（クライアントから import 禁止）。lib/docs.ts / lib/nav.ts / lib/admin-nav.ts … 純粋物（クライアント可）。lib/sanitize.ts … サーバー専用。

@@ -7,6 +7,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     title: 'コンテンツ',
     items: [
       { href: '/admin/games', label: '大会' },
+      { href: '/admin/game-updates', label: '大会情報更新履歴' },
       { href: '/admin/news', label: 'おしらせ' },
       { href: '/admin/resources', label: '資料（登録・資格）' },
       { href: '/admin/forms', label: '申込フォーム' },

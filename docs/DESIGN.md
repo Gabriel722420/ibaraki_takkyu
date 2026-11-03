@@ -65,6 +65,7 @@
   - ロゴ資産: `ittl_logo.svg`（全ロゴ・余白トリミング済 viewBox）/ `ittl_mark.svg`（emblem・紺地/favicon用＝県の形=紺/選手=白）/ `ittl_mark_white.svg`（白抜き版の単体アセット＝純ベクター・tight viewBox・width/height明示。ヘッダーは同じ emblem パスを BrandLogoMark でインライン）/ `app/icon.svg`（favicon＝白地角丸＋紺emblem）。**元ロゴ(ittl_logo.svg/ittl_mark.svg)の色は不改変**、白抜きは派生。全て `<image>`/base64 ラスター不使用の純ベクター。
 - **Hero（TOP）**: 卓球台の実写（`public/hero-table.jpg`）を `#133e96` のブランドウォッシュ（左濃→右淡のグラデ）で敷く。テキストは置かず画像＋ウォッシュのみで成立（連盟名はヘッダーが担う）。
 - **Card**: `bg-card border border-hairline rounded-xl p-4`。影なし。見出し 500/600、メタ muted。
+- **TOPの1行リスト（今後の大会／④更新履歴／⑤NEWS 共通）**: `rounded-xl border border-hairline bg-card` の枠内を `border-b border-hairline` で区切る縦積み。各行＝スマホはメタ上/本文下、sm+はメタ左(幅固定)＋本文1行省略＋右端chevron。カテゴリ/部門チップは `bg-primary/10 text-primary` の pill。④＝日付｜部門｜更新メッセージ、⑤＝重要/日付｜カテゴリ｜タイトル。
 - **Badge/Chip**: pill。状態は **mono+accent** で表現（下記）。
 - **StatusBadge（大会状態）**:
   - 予定(upcoming) = outline accent（`border-primary/40 text-primary bg-primary/5`）

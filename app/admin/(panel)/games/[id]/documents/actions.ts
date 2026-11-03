@@ -57,6 +57,28 @@ export async function updateDocType(input: {
   revalidate(input.gameId)
 }
 
+// ④ docアップ動線からの半自動起票：この大会の「大会情報更新履歴」を1件作成。
+// 部門(division)は大会から自動補完。TOP(④)と管理一覧を revalidate。
+export async function addGameUpdate(input: { gameId: string; body: string }) {
+  await requireAdmin()
+  const body = input.body.trim()
+  if (!body) return
+  const supabase = await createClient()
+  const { data: g } = await supabase
+    .from('games')
+    .select('division_id')
+    .eq('id', input.gameId)
+    .single()
+  const { error } = await supabase.from('game_updates').insert({
+    game_id: input.gameId,
+    division_id: g?.division_id ?? null,
+    body,
+  })
+  if (error) throw error
+  revalidatePath('/')
+  revalidatePath('/admin/game-updates')
+}
+
 export async function deleteDocument(input: {
   id: string
   gameId: string

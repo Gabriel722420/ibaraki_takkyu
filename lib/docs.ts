@@ -33,8 +33,30 @@ export function collectCategoryIds(
   return out
 }
 
-// 要項→組合せ→結果→連絡 の固定表示順
-export const DOC_ORDER: DocType[] = ['要項', '組合せ', '結果', '連絡']
+// 大会詳細の固定表示順：要項→組み合わせ→上位結果→詳細結果→(レガシー)結果→お知らせ。
+// 空グループは非描画のため、2026以前は実質「要項/組合せ/結果/連絡」、2027〜は
+// 「要項/組み合わせ/上位結果/詳細結果/お知らせ」で出し分く。
+export const DOC_ORDER: DocType[] = [
+  '要項',
+  '組合せ',
+  '上位結果',
+  '詳細結果',
+  '結果',
+  '連絡',
+]
+
+// 表示ラベル（enum値は不変のまま表示名だけ整える）。組合せ→組み合わせ／連絡→お知らせ。
+export const DOC_LABEL: Record<DocType, string> = {
+  要項: '要項',
+  組合せ: '組み合わせ',
+  上位結果: '上位結果',
+  詳細結果: '詳細結果',
+  結果: '結果',
+  連絡: 'お知らせ',
+}
+
+// 詳細結果の掲載保持日数。これを過ぎたら公開側で非表示（上位結果・レガシー結果は永続）。
+export const RESULT_DETAIL_RETENTION_DAYS = 365
 
 // Storage/外部リンクを持つもの共通の構造的型（GameDocument・Resource 双方が満たす）
 type LinkedDoc = {

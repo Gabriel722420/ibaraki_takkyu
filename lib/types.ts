@@ -43,7 +43,15 @@ export type Form = {
   game?: { id: string; title: string } | null
 }
 
-export type DocType = '要項' | '組合せ' | '結果' | '連絡'
+// '結果' はレガシー（2026以前・WP移行分）。2027大会〜は '上位結果'(永続)/'詳細結果'(365日で非表示)。
+// '連絡' は表示上「お知らせ」（DOC_LABEL で読み替え）。
+export type DocType =
+  | '要項'
+  | '組合せ'
+  | '上位結果'
+  | '詳細結果'
+  | '結果'
+  | '連絡'
 
 export type Category = {
   id: string
@@ -111,4 +119,19 @@ export type GameDocument = {
   external_url: string | null
   sort_order: number
   is_published: boolean
+  created_at: string // 掲載日の基点（詳細結果の365日非表示に使用）
+}
+
+// ④ 大会情報更新履歴（手入力メッセージ＋部門タグ＋掲載日）。TOP表示は掲載30日で非表示。
+export type GameUpdate = {
+  id: string
+  game_id: string | null
+  division_id: string | null
+  body: string
+  posted_at: string // 'YYYY-MM-DD'
+  is_published: boolean
+  publish_at: string | null
+  created_at: string
+  division?: Division | null
+  game?: { id: string; title: string } | null
 }

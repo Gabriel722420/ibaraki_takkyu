@@ -9,27 +9,30 @@ import {
   MapPin,
 } from 'lucide-react'
 import {
-  listAnnouncements,
+  listTopNews,
+  listGameUpdates,
   listUpcomingGames,
   listCategories,
 } from '@/lib/queries'
 import { gameStatus, GAME_STATUS_LABEL, type GameStatus } from '@/lib/docs'
-import type { Announcement, Game } from '@/lib/types'
+import type { Announcement, Game, GameUpdate } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const today = new Date().toISOString().slice(0, 10)
-  // 実データの重心＝おしらせ(2049件)。大会は今後の新規のみ（当面少数）。
-  // すべて既存クエリの流用（表示のみ・データ取得は不変）。
-  const [news, games, categories] = await Promise.all([
-    listAnnouncements({ perPage: 18 }),
+  // ④大会情報更新履歴(30日)・⑤NEWS=連盟の新規お知らせ(wp_post_id null・365日)・今後の大会。
+  // 掲載期間フィルタは各クエリ内で retentionCutoff() により動的判定（cron不要）。
+  const [updates, news, games, categories] = await Promise.all([
+    listGameUpdates(10),
+    listTopNews(6),
     listUpcomingGames(6),
     listCategories(),
   ])
   const topCats = categories.filter((c) => !c.parent_id).slice(0, 8)
 
   const hasGames = games.length > 0
+  const hasUpdates = updates.length > 0
 
   return (
     <main>
@@ -120,14 +123,39 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 4. おしらせ（実データの主役）。最新順のカード＋カテゴリ絞り込み導線 */}
+      {/* 4. 大会情報更新履歴（④）：掲載30日で自動非表示。日付｜部門｜更新メッセージの時系列。
+          0件（30日以内に更新なし）なら畳んで空箱を見せない。神奈川の「更新履歴」準拠。 */}
+      {hasUpdates && (
+        <section>
+          <div className="mx-auto max-w-6xl px-4 pt-14 pb-2 md:px-6 md:pt-20 lg:px-8">
+            <SectionHeading
+              href="/games"
+              label="大会情報更新履歴"
+              more="大会情報一覧"
+            />
+            <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
+              {updates.map((u) => (
+                <li
+                  key={u.id}
+                  className="border-b border-hairline last:border-b-0"
+                >
+                  <GameUpdateRow u={u} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* 5. お知らせ（⑤ NEWS＝連盟の新規お知らせのみ・掲載365日）。②の1列リストUIを流用。
+          移行2049件は wp_post_id を持つため混ざらない。カテゴリチップは全お知らせ閲覧への導線。 */}
       <section>
         <div
           className={`mx-auto max-w-6xl px-4 pb-10 md:px-6 md:pb-14 lg:px-8 ${
-            hasGames ? 'pt-14 md:pt-20' : 'pt-16 md:pt-24'
+            hasGames || hasUpdates ? 'pt-14 md:pt-20' : 'pt-16 md:pt-24'
           }`}
         >
-          <SectionHeading href="/news" label="おしらせ" more="おしらせ一覧" />
+          <SectionHeading href="/news" label="お知らせ" more="おしらせ一覧" />
 
           {/* カテゴリ導線：Airbnb型の横スクロール1行ストリップ（平板な折返しを避ける） */}
           {topCats.length > 0 && (
@@ -146,9 +174,9 @@ export default async function Home() {
             </nav>
           )}
 
-          {news.items.length > 0 ? (
+          {news.length > 0 ? (
             <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
-              {news.items.map((a) => (
+              {news.map((a) => (
                 <li
                   key={a.id}
                   className="border-b border-hairline last:border-b-0"
@@ -273,6 +301,46 @@ function NewsRow({ a }: { a: Announcement }) {
         aria-hidden
       />
     </Link>
+  )
+}
+
+// ── ④ 大会情報更新履歴：1行＝日付｜部門チップ｜更新メッセージ。
+//    紐づく大会があれば /games/[id] へリンク、無ければ非リンクの行。NewsRow と同系の列構成。 ──
+function GameUpdateRow({ u }: { u: GameUpdate }) {
+  const rowClass =
+    'group flex flex-col gap-1.5 px-4 py-4 sm:flex-row sm:items-center sm:gap-4'
+  const inner = (
+    <>
+      {/* メタ：日付＋部門チップ。sm+ は幅固定で本文開始位置を揃える */}
+      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted sm:w-52">
+        <span>{formatNewsDate(u.posted_at)}</span>
+        {u.division?.name && (
+          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
+            {u.division.name}
+          </span>
+        )}
+      </span>
+      {/* 更新メッセージ：スマホ2行まで、sm+1行省略 */}
+      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary sm:line-clamp-1">
+        {u.body}
+      </span>
+      {u.game_id && (
+        <ChevronRight
+          className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:block"
+          aria-hidden
+        />
+      )}
+    </>
+  )
+  return u.game_id ? (
+    <Link
+      href={`/games/${u.game_id}`}
+      className={`${rowClass} transition-colors hover:bg-primary/[0.03] active:bg-primary/5`}
+    >
+      {inner}
+    </Link>
+  ) : (
+    <div className={rowClass}>{inner}</div>
   )
 }
 

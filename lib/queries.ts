@@ -1,5 +1,5 @@
 import { createClient } from './supabase/server'
-import { DOC_ORDER } from './docs'
+import { DOC_ORDER, RESULT_DETAIL_RETENTION_DAYS } from './docs'
 import type {
   Announcement,
   Category,
@@ -8,6 +8,7 @@ import type {
   FormField,
   Game,
   GameDocument,
+  GameUpdate,
   Officer,
   Resource,
 } from './types'
@@ -53,6 +54,15 @@ export type Paged<T> = {
 // 使い方: query.or(scheduledOr())（is_published=true とAND結合される）
 function scheduledOr(): string {
   return `publish_at.is.null,publish_at.lte.${new Date().toISOString()}`
+}
+
+// 掲載から N 日で非表示：JST基準の「今日−N日」を下限日付(YYYY-MM-DD)で返す。
+// scheduledOr()（秒単位の予約ゲート）と併用し .gte('<日付列>', retentionCutoff(N)) で効かせる。cron不要。
+// 日単位の境界はJSTで切る（UTC toISOString だと深夜帯で±1日ずれるため）。
+function retentionCutoff(days: number): string {
+  const jst = new Date(Date.now() + 9 * 3600_000)
+  jst.setUTCDate(jst.getUTCDate() - days)
+  return jst.toISOString().slice(0, 10)
 }
 
 // ── 設定値（settings, key→string）をまとめて取得 ──
@@ -371,6 +381,64 @@ export async function listUpcomingGames(limit = 5): Promise<Game[]> {
   return (data ?? []) as unknown as Game[]
 }
 
+// ⑤ TOP「NEWS（連盟のお知らせ）」：2027以降の“新規”お知らせのみ。
+// 新規＝wp_post_id が NULL（WP移行2049件は必ず wp_post_id を持つ＝構造的に混ざらない）。
+// 掲載から365日で非表示（published_at 基準・動的）。固定を優先し公開日降順。
+export async function listTopNews(limit = 6): Promise<Announcement[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*, category:categories(*)')
+    .eq('is_published', true)
+    .or(scheduledOr())
+    .is('wp_post_id', null)
+    .gte('published_at', retentionCutoff(365))
+    .order('is_pinned', { ascending: false })
+    .order('published_at', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return (data ?? []) as unknown as Announcement[]
+}
+
+// ④ TOP「大会情報更新履歴」：掲載から30日で非表示（posted_at 基準・動的）。新しい順。
+// game_updates 未適用（マイグレ前）でもTOPを壊さないよう、エラー時は空で縮退する。
+export async function listGameUpdates(limit = 10): Promise<GameUpdate[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('game_updates')
+    .select('*, division:divisions(*), game:games(id, title)')
+    .eq('is_published', true)
+    .or(scheduledOr())
+    .gte('posted_at', retentionCutoff(30))
+    .order('posted_at', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) return []
+  return (data ?? []) as unknown as GameUpdate[]
+}
+
+// ④ 管理側：全件（is_published/期間で絞らない）。未適用時は空で縮退。
+export async function listGameUpdatesAdmin(): Promise<GameUpdate[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('game_updates')
+    .select('*, division:divisions(*), game:games(id, title)')
+    .order('posted_at', { ascending: false })
+    .order('created_at', { ascending: false })
+  if (error) return []
+  return (data ?? []) as unknown as GameUpdate[]
+}
+
+export async function getGameUpdateAdmin(id: string): Promise<GameUpdate | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('game_updates')
+    .select('*, division:divisions(*), game:games(id, title)')
+    .eq('id', id)
+    .single()
+  return (data ?? null) as unknown as GameUpdate | null
+}
+
 // 部門一覧（公開/管理共通・sort_order 順）。divisions は公開読取可。
 export async function listDivisions(): Promise<Division[]> {
   const supabase = await createClient()
@@ -448,14 +516,24 @@ export async function listGamesForYearList(): Promise<
   const games = (data ?? []) as unknown as Game[]
   if (games.length === 0) return []
 
+  // 「結果あり」＝永続記録(上位結果 / レガシー結果) か、まだ有効な詳細結果(365日内)。
   const ids = games.map((g) => g.id)
   const { data: rdocs } = await supabase
     .from('game_documents')
-    .select('game_id')
-    .eq('doc_type', '結果')
+    .select('game_id, doc_type, created_at')
+    .in('doc_type', ['結果', '上位結果', '詳細結果'])
     .eq('is_published', true)
     .in('game_id', ids)
-  const resultSet = new Set((rdocs ?? []).map((r) => r.game_id as string))
+  const cutoff = retentionCutoff(RESULT_DETAIL_RETENTION_DAYS)
+  const resultSet = new Set(
+    (rdocs ?? [])
+      .filter(
+        (r) =>
+          r.doc_type !== '詳細結果' ||
+          String(r.created_at).slice(0, 10) >= cutoff,
+      )
+      .map((r) => r.game_id as string),
+  )
 
   return games.map((g) => ({ ...g, hasResult: resultSet.has(g.id) }))
 }
@@ -480,11 +558,19 @@ export async function getGame(id: string): Promise<{
       .eq('is_published', true)
       .order('sort_order'),
   ])
-  const documents = ((docs ?? []) as GameDocument[]).sort(
-    (a, b) =>
-      DOC_ORDER.indexOf(a.doc_type) - DOC_ORDER.indexOf(b.doc_type) ||
-      a.sort_order - b.sort_order,
-  )
+  // ③ 詳細結果は掲載から365日で非表示（created_at 基準・動的）。上位結果/レガシー結果は永続。
+  const cutoff = retentionCutoff(RESULT_DETAIL_RETENTION_DAYS)
+  const documents = ((docs ?? []) as GameDocument[])
+    .filter(
+      (d) =>
+        d.doc_type !== '詳細結果' ||
+        String(d.created_at).slice(0, 10) >= cutoff,
+    )
+    .sort(
+      (a, b) =>
+        DOC_ORDER.indexOf(a.doc_type) - DOC_ORDER.indexOf(b.doc_type) ||
+        a.sort_order - b.sort_order,
+    )
   return { game: (t ?? null) as Game | null, documents }
 }
 
