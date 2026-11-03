@@ -147,10 +147,13 @@ export default async function Home() {
           )}
 
           {news.items.length > 0 ? (
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
               {news.items.map((a) => (
-                <li key={a.id}>
-                  <NewsCard a={a} />
+                <li
+                  key={a.id}
+                  className="border-b border-hairline last:border-b-0"
+                >
+                  <NewsRow a={a} />
                 </li>
               ))}
             </ul>
@@ -239,14 +242,16 @@ function GameRow({ game: g, today }: { game: Game; today: string }) {
   )
 }
 
-// ── おしらせカード（日付・カテゴリバッジ・タイトル）。影でなく hairline＋値差で分離 ──
-function NewsCard({ a }: { a: Announcement }) {
+// ── おしらせ：1行1件の縦積みリスト（日付・カテゴリチップ・タイトル）。
+//    スマホ=メタ上／タイトル下、sm+=メタ左／タイトル右の横並び。GameRow と同系の列構成。 ──
+function NewsRow({ a }: { a: Announcement }) {
   return (
     <Link
       href={`/news/${a.wp_post_id ?? a.id}`}
-      className="group flex h-full flex-col gap-1.5 rounded-xl border border-hairline bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]"
+      className="group flex flex-col gap-1.5 px-4 py-4 transition-colors hover:bg-primary/[0.03] active:bg-primary/5 sm:flex-row sm:items-center sm:gap-4"
     >
-      <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+      {/* メタ：重要／日付／カテゴリ。sm+ は幅を固定してタイトル開始位置を揃える */}
+      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted sm:w-64">
         {a.is_pinned && (
           <span className="rounded-full bg-primary px-2.5 py-0.5 font-medium text-primary-foreground">
             重要
@@ -259,9 +264,14 @@ function NewsCard({ a }: { a: Announcement }) {
           </span>
         )}
       </span>
-      <span className="line-clamp-3 leading-relaxed font-medium text-ink group-hover:text-primary">
+      {/* タイトル：スマホは2行まで、sm+は1行省略で行を揃える */}
+      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary sm:line-clamp-1">
         {a.title}
       </span>
+      <ChevronRight
+        className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:block"
+        aria-hidden
+      />
     </Link>
   )
 }

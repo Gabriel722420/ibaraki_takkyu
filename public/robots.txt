@@ -1,0 +1,15 @@
+# 一般社団法人茨城県卓球連盟
+#
+# PDF（大会要項・結果等。参加者氏名などの個人情報を含む）は検索エンジンに
+# 索引させない。これは各 PDF レスポンスの「X-Robots-Tag: noindex」で確実に行う
+# （next.config.ts の headers() 参照）。
+#
+# ここで /pdf/ や /wp-content/uploads/ を Disallow しないのは意図的：
+# Disallow するとクローラが PDF を取得できず noindex を読めないため、
+# （外部リンク等で知られた URL が）URL のみで索引に残る恐れがある。
+# 確実に非索引化するため、クロールは許可し noindex を主たる手段とする。
+#
+# 管理画面はクロール不要のため遮断。
+User-agent: *
+Allow: /
+Disallow: /admin
