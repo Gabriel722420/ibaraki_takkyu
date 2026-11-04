@@ -1,16 +1,18 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // すべての PDF を検索エンジンに索引させない（大会要項/結果に参加者氏名等の個人情報を含むため）。
-  // 方式：各 PDF レスポンスに X-Robots-Tag: noindex を付与（＋noarchive でキャッシュも抑止）。
-  // 拡張子ベースで全階層（/pdf/**・/wp-content/uploads/** 等）を網羅。大文字 .PDF も対象。
-  // これはパスベースのため本番ドメイン切替後（takkyu.ibaraki.jp）でも同一に効く。
-  // robots.txt では PDF を Disallow しない：Disallow すると Googlebot がクロールできず
-  // noindex を読めない（URLのみ索引の恐れ）。確実な非索引化のためクロールは許可する。
+  // PDF を検索エンジンに索引させない（要項/結果等に個人情報を含むため）。X-Robots-Tag: noindex, noarchive。
+  //
+  // 配信経路ごとの noindex 担当：
+  // - /pdf/**・/wp-content/uploads/**・/documents/** → Route Handler(lib/storage-proxy) が配信時に明示付与。
+  // - public/about・public/policy の静的PDF（external_url の相対パスで配信）→ ここで付与。
+  // 両者はパスが重ならないため二重付与は起きない（Route Handler 側を正、本設定は静的PDF用）。
+  //
+  // robots.txt では PDF を Disallow しない：Disallow すると noindex を読めずURLのみ索引の恐れ。クロールは許可。
   async headers() {
     return [
       {
-        source: '/:path(.*\\.[pP][dD][fF])',
+        source: '/:dir(about|policy)/:file(.*\\.[pP][dD][fF])',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, noarchive' }],
       },
     ]

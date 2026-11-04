@@ -106,17 +106,20 @@ export function resolveImageUrl(path: string | null): string | null {
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${path}`
 }
 
-// Supabase Storage / 外部リンクの URL 解決
+// Storage(documents) / 外部リンクの URL 解決。
+// documents バケットは「自ドメイン経由（/documents/<file_path> → Route Handler）」で配信する。
+// これにより ⑥ noindex(X-Robots-Tag) を確実に適用（Supabase 直URLでは noindex が効かないため）。
+// external_url（外部リンク・about/policy の public/ 相対パス）は従来どおり verbatim。
 export function resolveDocUrl(
   doc: LinkedDoc,
   opts: { download?: boolean } = {},
 ): string | null {
   if (doc.external_url) return doc.external_url
   if (doc.file_path) {
-    const base = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documents/${doc.file_path}`
+    const base = `/documents/${doc.file_path}`
     if (opts.download) {
       const ext = doc.file_path.split('.').pop() || 'pdf'
-      return `${base}?download=${encodeURIComponent(doc.title)}.${ext}` // DLファイル名=表示名
+      return `${base}?download=${encodeURIComponent(doc.title)}.${ext}` // DLファイル名=表示名（upstreamへ透過）
     }
     return base
   }
