@@ -1,19 +1,31 @@
 import './globals.css'
 import { cookies } from 'next/headers'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { Inter, Noto_Sans_JP } from 'next/font/google'
+import localFont from 'next/font/local'
 
-// 欧文・数字は Inter、和文は Noto Sans JP（両方オープン・next/font でセルフホスト）。
+// 欧文・数字は Inter、和文は Noto Sans JP。両方 woff2 を app/fonts/ に同梱し next/font/local で
+// セルフホスト（ビルド時に Google Fonts へ一切アクセスしない＝取得失敗でデプロイが落ちる事故を根治）。
 // font-family 先頭に Inter → 和文グリフは Noto へフォールバック（DESIGN.md Typography）。
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+// 使用weightは 400/500/600/700（body/ui/subheading/heading）。display:swap は従来どおり。
+const inter = localFont({
+  src: [
+    { path: './fonts/inter-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/inter-500.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/inter-600.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/inter-700.woff2', weight: '700', style: 'normal' },
+  ],
   variable: '--font-inter',
   display: 'swap',
 })
-const notoSansJP = Noto_Sans_JP({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+// Noto Sans JP は fontsource の「japanese」サブセット単一ファイル（JIS全域の完全カバレッジ）を
+// weight 別に同梱。欠字を避けるため subset は切らず full を採用（サイズは下記 report 参照）。
+const notoSansJP = localFont({
+  src: [
+    { path: './fonts/noto-sans-jp-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/noto-sans-jp-500.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/noto-sans-jp-600.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/noto-sans-jp-700.woff2', weight: '700', style: 'normal' },
+  ],
   variable: '--font-noto',
   display: 'swap',
 })

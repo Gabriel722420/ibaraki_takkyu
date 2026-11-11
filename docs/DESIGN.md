@@ -28,7 +28,7 @@
 > 影は overlay / dropdown / sheet 等「浮く要素」のみ。カードに線+影の両掛けは禁止。
 
 ### Typography — Airbnb比率を維持、サイズは高齢者UDへ引き上げ
-- 和文 **Noto Sans JP** / 欧文・数字 **Inter**（両方オープン・next/font でセルフホスト）。weight 400/500/600/700。
+- 和文 **Noto Sans JP** / 欧文・数字 **Inter**（両方オープン）。**woff2 を app/fonts/ に同梱し `next/font/local` でセルフホスト**＝ビルド時に Google Fonts へ一切アクセスしない（取得失敗でデプロイが落ちる事故を根治）。weight 400/500/600/700。Noto は JIS 全域カバーの japanese 単一ファイル（欠字回避のため subset しない・full）。
 - すべて rem 基準（html 17px + 文字サイズ切替に追従）。下表の px は base=17px 時の目安。
 
 | 役割 | size | weight | tracking | 備考 |
