@@ -27,7 +27,7 @@
 - **リッチ本文**：news.body / games.summary は Tiptap 製 HTML。表示は lib/sanitize（isomorphic-dompurify）でサニタイズ。本文内画像は images バケット（自動圧縮）。予約投稿（publish_at、クエリで公開判定・cron不要）。
 - **DB化された編集**：settings に会長挨拶(about_*)・ポリシー(policy_*)。officers（役員・階層グルーピング表示）、categories（お知らせ分類・parent_id で階層）。
 - **WP移行**：REST API 経由で 31カテゴリ＋2049記事を announcements へ全件移行済み（方式1＝1対1）。本文HTMLは **verbatim 保存（パス書き換えなし）**。冪等キー：categories.wp_term_id / announcements.wp_post_id。
-  - ⚠ **本文中の絶対URL（https://takkyu.ibaraki.jp/pdf/... , /wp-content/uploads/...）はそのまま**。実ファイルは **Supabase Storage `archive` バケット（キー＝現行パス）** に置き、**Route Handler（app/pdf・app/wp-content/uploads）が透過プロキシ**で現行パス不変配信（FTP廃止）。ドメイン切替で本文の絶対URLが生きる。
+  - ⚠ **本文中の絶対URL（https://takkyu.ibaraki.jp/pdf/... , /uploads/... , /old_uploads/... , /wp-content/uploads/...）はそのまま**。実ファイルは **Supabase Storage `archive` バケット（キー＝現行パス）** に置き、**Route Handler（app/pdf・app/uploads・app/old_uploads・app/wp-content/uploads）が透過プロキシ**で現行パス不変配信（FTP廃止）。全PDF 3,847件は pdf/(2,117)＋uploads/(1,424)＋old_uploads/(306)＋wp-content/uploads に分散。ドメイン切替で本文の絶対URLが生きる。
 - **認証/基盤**：Basic認証（middleware.ts・依存ゼロ）、GA4（G-6NZR9MQ159）、管理ログイン/ログアウト/パスワード変更。
 - **Route Group 分離**：`app/(public)/*`（公開・SiteHeader/Footer）と `app/admin/(panel)/*`（管理・shadcn サイドバー）。`app/admin/login` はグループ外（chrome無し）。ルート layout は `<html>` シェルのみ。
 - **管理UI**：shadcn/ui（Table/Dialog/DropdownMenu/Switch/sonner 等）で wp-admin 風（暗色サイドバー #1d2327・現在地のみ #133e96 ハイライト・アイコン）。shadcn は `.admin-shell` スコープに隔離し公開側トークンを侵さない。
@@ -39,7 +39,7 @@
 - 0009 forms（申込フォーム：forms / form_fields / form_submissions）。
 - 0010 result_two_tier（game_doc_type に 上位結果/詳細結果 を追加。レガシー結果は残置）。
 - 0011 game_updates（④大会情報更新履歴：手入力メッセージ＋部門タグ＋posted_at＋RLS）。
-- 0012 archive（旧サイト静的資産 2.7GB 用 public バケット。キー＝現行パスそのまま pdf/**・wp-content/uploads/**）。
+- 0012 archive（旧サイト静的資産 2.7GB 用 public バケット。キー＝現行パスそのまま pdf/**・uploads/**・old_uploads/**・wp-content/uploads/**）。
 - 公開は is_published=true（＋publish_at到来）で RLS 読取可、書込は authenticated のみ。Storage：documents(PDF/25MB)・images(jpg/png/webp/10MB)。
 - **掲載期間フィルタ（cron不要・動的）**：retentionCutoff(N)＝JST「今日−N日」を下限に .gte で判定。③詳細結果=365日(created_at)／④更新履歴=30日(posted_at)／⑤NEWS=365日(published_at)。③上位結果・レガシー結果は永続。
 - **③大会結果2層化（2027〜）**：詳細＝要項/組み合わせ/上位結果(永続)/詳細結果(365日)/お知らせ(=連絡の表示読替)。DOC_ORDER/DOC_LABEL/RESULT_DETAIL_RETENTION_DAYS は lib/docs.ts。2027線引きは fiscal_year＋運用規約＋UI既定（schemaフラグ無し）。
