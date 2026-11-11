@@ -123,71 +123,81 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 4. 大会情報更新履歴（④）：掲載30日で自動非表示。日付｜部門｜更新メッセージの時系列。
-          0件（30日以内に更新なし）なら畳んで空箱を見せない。神奈川の「更新履歴」準拠。 */}
-      {hasUpdates && (
-        <section>
-          <div className="mx-auto max-w-6xl px-4 pt-14 pb-2 md:px-6 md:pt-20 lg:px-8">
-            <SectionHeading
-              href="/games"
-              label="大会情報更新履歴"
-              more="大会情報一覧"
-            />
-            <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
-              {updates.map((u) => (
-                <li
-                  key={u.id}
-                  className="border-b border-hairline last:border-b-0"
-                >
-                  <GameUpdateRow u={u} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
-      {/* 5. お知らせ（⑤ NEWS＝連盟の新規お知らせのみ・掲載365日）。②の1列リストUIを流用。
-          移行2049件は wp_post_id を持つため混ざらない。カテゴリチップは全お知らせ閲覧への導線。 */}
+      {/* 4+5. ④大会情報更新履歴（左）と ⑤お知らせ(NEWS)（右）を md以上で2カラム横並び、
+          md未満は1カラムに畳み 更新履歴→NEWS の順で縦積み。中身・フィルタ・件数・出し分けは不変。
+          ④は30日以内に更新がある時のみ表示。④が無い時は⑤を単独(全幅)で表示（右カラムが空かない）。 */}
       <section>
         <div
           className={`mx-auto max-w-6xl px-4 pb-10 md:px-6 md:pb-14 lg:px-8 ${
-            hasGames || hasUpdates ? 'pt-14 md:pt-20' : 'pt-16 md:pt-24'
+            hasGames ? 'pt-14 md:pt-20' : 'pt-16 md:pt-24'
           }`}
         >
-          <SectionHeading href="/news" label="お知らせ" more="おしらせ一覧" />
-
-          {/* カテゴリ導線：Airbnb型の横スクロール1行ストリップ（平板な折返しを避ける） */}
-          {topCats.length > 0 && (
-            <nav
-              aria-label="おしらせのカテゴリ"
-              className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            >
-              <CatChip href="/news" label="すべて" accent />
-              {topCats.map((c) => (
-                <CatChip
-                  key={c.id}
-                  href={`/news?category=${encodeURIComponent(c.slug)}`}
-                  label={c.name}
+          <div
+            className={
+              hasUpdates
+                ? 'grid gap-10 md:grid-cols-2 md:gap-6 lg:gap-8'
+                : undefined
+            }
+          >
+            {/* 左：④ 大会情報更新履歴 */}
+            {hasUpdates && (
+              <div>
+                <SectionHeading
+                  href="/games"
+                  label="大会情報更新履歴"
+                  more="大会情報一覧"
                 />
-              ))}
-            </nav>
-          )}
+                <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
+                  {updates.map((u) => (
+                    <li
+                      key={u.id}
+                      className="border-b border-hairline last:border-b-0"
+                    >
+                      <GameUpdateRow u={u} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-          {news.length > 0 ? (
-            <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
-              {news.map((a) => (
-                <li
-                  key={a.id}
-                  className="border-b border-hairline last:border-b-0"
+            {/* 右：⑤ お知らせ(NEWS＝連盟の新規お知らせのみ・掲載365日)。②の1列リストUIを流用。
+                移行2049件は wp_post_id を持つため混ざらない。カテゴリチップは全お知らせ閲覧への導線。 */}
+            <div>
+              <SectionHeading href="/news" label="お知らせ" more="おしらせ一覧" />
+
+              {/* カテゴリ導線：Airbnb型の横スクロール1行ストリップ（平板な折返しを避ける） */}
+              {topCats.length > 0 && (
+                <nav
+                  aria-label="おしらせのカテゴリ"
+                  className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
-                  <NewsRow a={a} />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyCard>現在、お知らせはありません。</EmptyCard>
-          )}
+                  <CatChip href="/news" label="すべて" accent />
+                  {topCats.map((c) => (
+                    <CatChip
+                      key={c.id}
+                      href={`/news?category=${encodeURIComponent(c.slug)}`}
+                      label={c.name}
+                    />
+                  ))}
+                </nav>
+              )}
+
+              {news.length > 0 ? (
+                <ul className="overflow-hidden rounded-xl border border-hairline bg-card">
+                  {news.map((a) => (
+                    <li
+                      key={a.id}
+                      className="border-b border-hairline last:border-b-0"
+                    >
+                      <NewsRow a={a} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <EmptyCard>現在、お知らせはありません。</EmptyCard>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -276,10 +286,11 @@ function NewsRow({ a }: { a: Announcement }) {
   return (
     <Link
       href={`/news/${a.wp_post_id ?? a.id}`}
-      className="group flex flex-col gap-1.5 px-4 py-4 transition-colors hover:bg-primary/[0.03] active:bg-primary/5 sm:flex-row sm:items-center sm:gap-4"
+      className="group flex flex-col gap-1.5 px-4 py-4 transition-colors hover:bg-primary/[0.03] active:bg-primary/5 lg:flex-row lg:items-center lg:gap-4"
     >
-      {/* メタ：重要／日付／カテゴリ。sm+ は幅を固定してタイトル開始位置を揃える */}
-      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted sm:w-64">
+      {/* メタ：重要／日付／カテゴリ。lg+ は幅を固定してタイトル開始位置を揃える
+          （2カラム時は md〜lg で列が狭いためメタ上/タイトル下の縦積み、lg以上で横並び）。 */}
+      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted lg:w-56">
         {a.is_pinned && (
           <span className="rounded-full bg-primary px-2.5 py-0.5 font-medium text-primary-foreground">
             重要
@@ -292,12 +303,12 @@ function NewsRow({ a }: { a: Announcement }) {
           </span>
         )}
       </span>
-      {/* タイトル：スマホは2行まで、sm+は1行省略で行を揃える */}
-      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary sm:line-clamp-1">
+      {/* タイトル：狭幅は2行まで、lg+は1行省略で行を揃える */}
+      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary lg:line-clamp-1">
         {a.title}
       </span>
       <ChevronRight
-        className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:block"
+        className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary lg:block"
         aria-hidden
       />
     </Link>
@@ -308,11 +319,11 @@ function NewsRow({ a }: { a: Announcement }) {
 //    紐づく大会があれば /games/[id] へリンク、無ければ非リンクの行。NewsRow と同系の列構成。 ──
 function GameUpdateRow({ u }: { u: GameUpdate }) {
   const rowClass =
-    'group flex flex-col gap-1.5 px-4 py-4 sm:flex-row sm:items-center sm:gap-4'
+    'group flex flex-col gap-1.5 px-4 py-4 lg:flex-row lg:items-center lg:gap-4'
   const inner = (
     <>
-      {/* メタ：日付＋部門チップ。sm+ は幅固定で本文開始位置を揃える */}
-      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted sm:w-52">
+      {/* メタ：日付＋部門チップ。lg+ は幅固定で本文開始位置を揃える（2カラムは lg未満で縦積み）。 */}
+      <span className="flex shrink-0 flex-wrap items-center gap-2 text-sm text-ink-muted lg:w-48">
         <span>{formatNewsDate(u.posted_at)}</span>
         {u.division?.name && (
           <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary">
@@ -320,13 +331,13 @@ function GameUpdateRow({ u }: { u: GameUpdate }) {
           </span>
         )}
       </span>
-      {/* 更新メッセージ：スマホ2行まで、sm+1行省略 */}
-      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary sm:line-clamp-1">
+      {/* 更新メッセージ：狭幅は2行まで、lg+1行省略 */}
+      <span className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium text-ink group-hover:text-primary lg:line-clamp-1">
         {u.body}
       </span>
       {u.game_id && (
         <ChevronRight
-          className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:block"
+          className="hidden size-5 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-primary lg:block"
           aria-hidden
         />
       )}
