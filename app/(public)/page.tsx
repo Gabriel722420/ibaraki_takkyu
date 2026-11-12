@@ -425,12 +425,9 @@ function EntryCard({
   )
 }
 
+// 0件時の控えめな表示。公開前は空になりがちなので、大きな空箱でなく小さなミュートの1行で自然に。
 function EmptyCard({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="rounded-xl border border-dashed border-surface-muted bg-card px-4 py-8 text-center text-ink-muted">
-      {children}
-    </p>
-  )
+  return <p className="px-1 py-3 text-sm text-ink-muted">{children}</p>
 }
 
 // 状態は mono+accent の濃淡で表現（他の色相を足さない・DESIGN.md StatusBadge）

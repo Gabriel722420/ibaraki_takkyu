@@ -53,7 +53,7 @@
 - **hover（カード/リンク）**: hairline → `border-primary/40` + `bg-primary/[0.03]`、chevron は `translate-x-0.5`。**影は足さない**。150–200ms・`transition-colors`中心。
 - **focus-visible**: `.site` 配下の a / button に `outline: 2px solid #133e96; outline-offset: 2px`。キーボード可視を全要素で担保。
 - **active**: `bg-primary/5`（タップ即応）。タップ領域は最小 44px。
-- **empty**: 破線 hairline の枠 + muted テキスト（`EmptyCard`）。中央寄せ・余白確保でスカスカに見せない。
+- **empty**: 控えめな muted の1行（`EmptyCard`・`text-sm text-ink-muted`）。公開前は空になりがちなため大きな空箱は避け、小さく自然に。
 - **disabled**: `text-[#c1c1c1]`、ボーダー hairline、hover無効。
 
 ---
